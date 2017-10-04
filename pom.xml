@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>gapa</groupId>
+    <artifactId>gapa</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>gapa-config</module>
+        <module>gapa-database</module>
+        <module>gapa-domain</module>
+        <module>gapa-process</module>
+        <module>gapa-cli</module>
+        <module>gapa-web</module>
+    </modules>
+
+
+</project>
