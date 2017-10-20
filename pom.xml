@@ -22,7 +22,13 @@
             <dependency>
                 <groupId>net.sourceforge.plantuml</groupId>
                 <artifactId>plantuml</artifactId>
-                <version>1.2017.12</version>
+                <version>${plantuml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -39,4 +45,9 @@
             </plugin>
         </plugins>
     </build>
+
+    <properties>
+        <junit.jupiter.version>5.0.1</junit.jupiter.version>
+        <plantuml.version>1.2017.12</plantuml.version>
+    </properties>
 </project>
