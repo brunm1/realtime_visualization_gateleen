@@ -1,4 +1,4 @@
-package main;
+package ch.bfh.ti.gapa.cli;
 
 public class Cli {
 
