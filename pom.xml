@@ -16,6 +16,7 @@
         <module>gapa-cli</module>
         <module>gapa-web</module>
         <module>gapa-playground</module>
+        <module>gapa-test</module>
     </modules>
 
     <dependencyManagement>
