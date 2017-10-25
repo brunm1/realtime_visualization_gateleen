@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  */
 public class Record {
     private String sender;
-    private String reciepent;
+    private String recipient;
     private LocalDateTime time;
     private String httpMethod;
 
@@ -19,12 +19,12 @@ public class Record {
         this.sender = sender;
     }
 
-    public String getReciepent() {
-        return reciepent;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setReciepent(String reciepent) {
-        this.reciepent = reciepent;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public LocalDateTime getTime() {

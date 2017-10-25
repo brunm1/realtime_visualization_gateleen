@@ -31,7 +31,7 @@ public class RecordParser {
             String sender = matcher.group("sender");
 
             Record record = new Record();
-            record.setReciepent(targetUrl); //ToDo: ev. shorten or resolve
+            record.setRecipient(targetUrl); //ToDo: ev. shorten or resolve
             record.setSender(sender);
             record.setTime(time);
             record.setHttpMethod(httpMethod);

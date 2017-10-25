@@ -36,7 +36,7 @@ class RecordParserTest {
 
         if(record != null) {
             assertEquals("PUT", record.getHttpMethod());
-            assertEquals("/gateleen/server/event/v1/foo/bar", record.getReciepent());
+            assertEquals("/gateleen/server/event/v1/foo/bar", record.getRecipient());
             assertEquals("service", record.getSender());
             assertEquals(LocalDateTime.of(2017, 10, 20, 9, 11, 29, 577000000), record.getTime());
         }
@@ -59,7 +59,7 @@ class RecordParserTest {
         if(records.size() > 0) {
             Record record = records.get(0);
             assertEquals("PUT", record.getHttpMethod());
-            assertEquals("/gateleen/server/event/v1/foo/bar", record.getReciepent());
+            assertEquals("/gateleen/server/event/v1/foo/bar", record.getRecipient());
             assertEquals("service", record.getSender());
             assertEquals(LocalDateTime.of(2017, 10, 20, 9, 11, 29, 577000000), record.getTime());
         }
