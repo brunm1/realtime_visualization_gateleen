@@ -9,6 +9,7 @@ public class Record {
     private String sender;
     private String reciepent;
     private LocalDateTime time;
+    private String httpMethod;
 
     public String getSender() {
         return sender;
@@ -32,5 +33,13 @@ public class Record {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
     }
 }
