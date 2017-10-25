@@ -1,0 +1,4 @@
+@startuml
+Spaceship -> Houston : We have a problem
+Houston -> Spaceship : Hold on!
+@enduml
