@@ -31,8 +31,7 @@ public class SequenceDiagramGenerator {
         }
 
         sb
-            .append("@enduml")
-            .append("\n");
+            .append("@enduml");
 
         return sb.toString();
     }
