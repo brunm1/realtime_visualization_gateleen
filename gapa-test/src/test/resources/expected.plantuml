@@ -1,0 +1,32 @@
+@startuml
+mars -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+mars -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+uranus -> recipientdummy : 
+@enduml
+

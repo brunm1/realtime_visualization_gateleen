@@ -9,5 +9,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="gapa-process" />
+    <orderEntry type="library" name="Maven: net.sourceforge.plantuml:plantuml:1.2017.12" level="project" />
+    <orderEntry type="module" module-name="gapa-domain" />
   </component>
 </module>

@@ -15,5 +15,8 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.0.1" level="project" />
     <orderEntry type="module" module-name="gapa-cli" />
+    <orderEntry type="module" module-name="gapa-process" />
+    <orderEntry type="library" name="Maven: net.sourceforge.plantuml:plantuml:1.2017.12" level="project" />
+    <orderEntry type="module" module-name="gapa-domain" />
   </component>
 </module>

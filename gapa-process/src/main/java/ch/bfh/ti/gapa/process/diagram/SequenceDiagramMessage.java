@@ -1,5 +1,7 @@
 package ch.bfh.ti.gapa.process.diagram;
 
+import ch.bfh.ti.gapa.domain.recording.Record;
+
 public class SequenceDiagramMessage {
     private String from;
     private String to;
@@ -27,5 +29,15 @@ public class SequenceDiagramMessage {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public static SequenceDiagramMessage createFromRecord(Record record) {
+        SequenceDiagramMessage sequenceDiagramMessage = new SequenceDiagramMessage();
+        //TODO how to set label?
+        sequenceDiagramMessage.setLabel("");
+        //TODO change back to getRecipient if it doesn't contain url anymore
+        sequenceDiagramMessage.setTo("recipientdummy");
+        sequenceDiagramMessage.setFrom(record.getSender());
+        return sequenceDiagramMessage;
     }
 }
