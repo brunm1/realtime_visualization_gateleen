@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Subset {
+class Subset {
     private List<Filter> filters;
     private Recording recording;
 
-    public Subset(List<Filter> filters, Recording recording) {
+    Subset(List<Filter> filters, Recording recording) {
         this.filters = filters;
         this.recording = recording;
     }

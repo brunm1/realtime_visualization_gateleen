@@ -2,12 +2,10 @@ package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 
-import java.util.regex.Pattern;
-
-public abstract class StringEqualFilter extends Filter{
+public abstract class StringEqualFilter implements Filter{
     private String string;
 
-    public StringEqualFilter(String string) {
+    StringEqualFilter(String string) {
         this.string = string;
     }
 

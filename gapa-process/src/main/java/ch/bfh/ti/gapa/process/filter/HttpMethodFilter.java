@@ -2,10 +2,8 @@ package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 
-import java.util.regex.Pattern;
-
-public class HttpMethodFilter extends StringEqualFilter{
-    public HttpMethodFilter(String s) {
+class HttpMethodFilter extends StringEqualFilter{
+    HttpMethodFilter(String s) {
         super(s);
     }
 
