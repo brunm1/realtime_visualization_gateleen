@@ -4,15 +4,15 @@ import ch.bfh.ti.gapa.domain.recording.Record;
 
 import java.time.LocalDateTime;
 
-public class ToTimeFilter extends Filter{
+public class ToTimeFilter implements Filter{
     private LocalDateTime to;
 
-    public ToTimeFilter(LocalDateTime to) {
+    ToTimeFilter(LocalDateTime to) {
         this.to = to;
     }
 
     @Override
-    boolean filter(Record record) {
+    public boolean filter(Record record) {
         LocalDateTime time = record.getTime();
         return time.isEqual(to) || time.isBefore(to);
     }

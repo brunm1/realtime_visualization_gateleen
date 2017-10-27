@@ -4,10 +4,10 @@ import ch.bfh.ti.gapa.domain.recording.Record;
 
 import java.util.regex.Pattern;
 
-public abstract class PatternFilter extends Filter{
+public abstract class PatternFilter implements Filter{
     private Pattern pattern;
 
-    public PatternFilter(Pattern pattern) {
+    PatternFilter(Pattern pattern) {
         this.pattern = pattern;
     }
 

@@ -2,10 +2,8 @@ package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 
-import java.util.regex.Pattern;
-
-public class ReceiverFilter extends StringEqualFilter{
-    public ReceiverFilter(String receiver) {
+class ReceiverFilter extends StringEqualFilter{
+    ReceiverFilter(String receiver) {
         super(receiver);
     }
 
