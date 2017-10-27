@@ -12,7 +12,6 @@ public class UrlFilter extends PatternFilter{
 
     @Override
     String getValue(Record record) {
-        //TODO replace getRecipient with getUrl when available
-        return record.getRecipient();
+        return record.getUrl();
     }
 }

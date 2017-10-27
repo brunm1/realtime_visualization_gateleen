@@ -33,10 +33,8 @@ public class SequenceDiagramMessage {
 
     public static SequenceDiagramMessage createFromRecord(Record record) {
         SequenceDiagramMessage sequenceDiagramMessage = new SequenceDiagramMessage();
-        //TODO how to set label?
-        sequenceDiagramMessage.setLabel("");
-        //TODO change back to getRecipient if it doesn't contain url anymore
-        sequenceDiagramMessage.setTo("recipientdummy");
+        sequenceDiagramMessage.setLabel(record.getUrl());
+        sequenceDiagramMessage.setTo(record.getRecipient());
         sequenceDiagramMessage.setFrom(record.getSender());
         return sequenceDiagramMessage;
     }

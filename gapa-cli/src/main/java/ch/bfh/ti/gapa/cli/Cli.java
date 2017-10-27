@@ -19,7 +19,7 @@ public class Cli {
         String timeFormat = args[1];
         InputStream is = System.in;
         RecordParser recordParser =
-                new RecordParser(Pattern.compile(logPatternArg), DateTimeFormatter.ofPattern(timeFormat, Locale.GERMANY));
+                new RecordParser(Pattern.compile(logPatternArg),Pattern.compile("(?<target>.*)"), DateTimeFormatter.ofPattern(timeFormat, Locale.GERMANY));
         String log = StringFromInputStreamReader.readStringFromInputStream(is, Charset.forName("UTF-8"), 1024);
         List<Record> records = recordParser.batchParse(log);
         String plantUmlDiagram = new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(records);

@@ -1,31 +1,31 @@
 @startuml
-mars -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-mars -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
-uranus -> recipientdummy : 
+mars -> /earth/services/moon/status : /earth/services/moon/status
+uranus -> /earth/time/v1/offset/_hooks/listeners/http/stuff-044829350048546734 : /earth/time/v1/offset/_hooks/listeners/http/stuff-044829350048546734
+uranus -> /earth/data/mars/changeLang/_hooks/listeners/http/stuff-0590740903117863 : /earth/data/mars/changeLang/_hooks/listeners/http/stuff-0590740903117863
+uranus -> /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-028306492427148 : /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-028306492427148
+uranus -> /earth/print/v1/info/printers/_hooks/listeners/http/stuff-0611367929541001 : /earth/print/v1/info/printers/_hooks/listeners/http/stuff-0611367929541001
+uranus -> /earth/print/v1/status/printers/_hooks/listeners/http/stuff-05719991644726352 : /earth/print/v1/status/printers/_hooks/listeners/http/stuff-05719991644726352
+uranus -> /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03605331037333681 : /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03605331037333681
+uranus -> /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03810166830522095 : /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03810166830522095
+uranus -> /earth/logloc/v1/trips/current/position/_hooks/listeners/http/stuff-02900858216428859 : /earth/logloc/v1/trips/current/position/_hooks/listeners/http/stuff-02900858216428859
+uranus -> /earth/logloc/v1/stoppingpoints/current/_hooks/listeners/http/stuff-09617331038418762 : /earth/logloc/v1/stoppingpoints/current/_hooks/listeners/http/stuff-09617331038418762
+uranus -> /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-0943011858883462 : /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-0943011858883462
+uranus -> /earth/logloc/v1/trips/current/travelled/percentage/_hooks/listeners/http/stuff-09879281187169604 : /earth/logloc/v1/trips/current/travelled/percentage/_hooks/listeners/http/stuff-09879281187169604
+uranus -> /earth/timetable/registration/v1/trip/initialization/_hooks/listeners/http/stuff-015626745437582534 : /earth/timetable/registration/v1/trip/initialization/_hooks/listeners/http/stuff-015626745437582534
+uranus -> /earth/vehicle/v1/identity/_hooks/listeners/http/stuff-010329700470490888 : /earth/vehicle/v1/identity/_hooks/listeners/http/stuff-010329700470490888
+mars -> /earth/services/moon/status : /earth/services/moon/status
+mars -> /earth/data/mars/heart/beat : /earth/data/mars/heart/beat
+mars -> /earth/data/mars/heart/beat : /earth/data/mars/heart/beat
+mars -> /earth/server/event/v1/channels/stuff-010390777219145897 : /earth/server/event/v1/channels/stuff-010390777219145897
+mars -> /earth/server/event/v1/channels/stuff-08626426432956182 : /earth/server/event/v1/channels/stuff-08626426432956182
+mars -> /earth/server/event/v1/channels/stuff-004938401849781937 : /earth/server/event/v1/channels/stuff-004938401849781937
+mars -> /earth/server/event/v1/channels/stuff-030817379511216436 : /earth/server/event/v1/channels/stuff-030817379511216436
+uranus -> /earth/time/v1/offset/_hooks/listeners/http/stuff-02005283118522001 : /earth/time/v1/offset/_hooks/listeners/http/stuff-02005283118522001
+uranus -> /earth/data/mars/changeLang/_hooks/listeners/http/stuff-0905487615044452 : /earth/data/mars/changeLang/_hooks/listeners/http/stuff-0905487615044452
+uranus -> /earth/logloc/v1/trips/current/position/_hooks/listeners/http/stuff-022242635858958115 : /earth/logloc/v1/trips/current/position/_hooks/listeners/http/stuff-022242635858958115
+uranus -> /earth/logloc/v1/stoppingpoints/current/_hooks/listeners/http/stuff-08119146250383324 : /earth/logloc/v1/stoppingpoints/current/_hooks/listeners/http/stuff-08119146250383324
+uranus -> /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-003087892491923605 : /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-003087892491923605
+uranus -> /earth/vehicle/v1/identity/_hooks/listeners/http/stuff-03007080615073763 : /earth/vehicle/v1/identity/_hooks/listeners/http/stuff-03007080615073763
+uranus -> /earth/timetable/registration/v1/trip/initialization/_hooks/listeners/http/stuff-06367921381394086 : /earth/timetable/registration/v1/trip/initialization/_hooks/listeners/http/stuff-06367921381394086
+uranus -> /earth/logloc/v1/trips/current/travelled/percentage/_hooks/listeners/http/stuff-05091028321180737 : /earth/logloc/v1/trips/current/travelled/percentage/_hooks/listeners/http/stuff-05091028321180737
 @enduml

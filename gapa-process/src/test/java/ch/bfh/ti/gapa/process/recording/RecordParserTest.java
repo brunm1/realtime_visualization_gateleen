@@ -28,7 +28,7 @@ class RecordParserTest {
     void parse() {
         String data = "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service ";
 
-        RecordParser recordParser = new RecordParser(pattern, timeFormat);
+        RecordParser recordParser = new RecordParser(pattern, Pattern.compile("(?<target>.*)"), timeFormat);
 
         Record record = recordParser.parse(data);
 
@@ -36,6 +36,7 @@ class RecordParserTest {
 
         if(record != null) {
             assertEquals("PUT", record.getHttpMethod());
+            assertEquals("/gateleen/server/event/v1/foo/bar", record.getUrl());
             assertEquals("/gateleen/server/event/v1/foo/bar", record.getRecipient());
             assertEquals("service", record.getSender());
             assertEquals(LocalDateTime.of(2017, 10, 20, 9, 11, 29, 577000000), record.getTime());
@@ -48,7 +49,7 @@ class RecordParserTest {
                 "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service " + "\n" +
                 "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service ";
 
-        RecordParser recordParser = new RecordParser(pattern, timeFormat);
+        RecordParser recordParser = new RecordParser(pattern,  Pattern.compile("(?<target>.*)"), timeFormat);
 
         List<Record> records = recordParser.batchParse(data);
 
@@ -59,7 +60,7 @@ class RecordParserTest {
         if(records.size() > 0) {
             Record record = records.get(0);
             assertEquals("PUT", record.getHttpMethod());
-            assertEquals("/gateleen/server/event/v1/foo/bar", record.getRecipient());
+            assertEquals("/gateleen/server/event/v1/foo/bar", record.getUrl());
             assertEquals("service", record.getSender());
             assertEquals(LocalDateTime.of(2017, 10, 20, 9, 11, 29, 577000000), record.getTime());
         }
