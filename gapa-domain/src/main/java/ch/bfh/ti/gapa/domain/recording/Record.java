@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class Record {
     private String sender;
     private String recipient;
+    private String url;
     private LocalDateTime time;
     private String httpMethod;
 
@@ -41,5 +42,13 @@ public class Record {
 
     public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
