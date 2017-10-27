@@ -12,16 +12,18 @@ import java.util.regex.Pattern;
  * Created by adrian on 20.10.17.
  */
 public class RecordParser {
-    private Pattern pattern;
+    private Pattern logPattern;
+    private Pattern urlPattern;
     private DateTimeFormatter timeFormat;
 
-    public RecordParser(Pattern pattern, DateTimeFormatter timeFormat) {
-        this.pattern = pattern;
+    public RecordParser(Pattern logPattern, Pattern urlPattern, DateTimeFormatter timeFormat) {
+        this.logPattern = logPattern;
+        this.urlPattern = urlPattern;
         this.timeFormat = timeFormat;
     }
 
     public Record parse(String logEntry) {
-        Matcher matcher = pattern.matcher(logEntry);
+        Matcher matcher = logPattern.matcher(logEntry);
 
         if(matcher.find()) {
             String dateString = matcher.group("date");
@@ -31,7 +33,15 @@ public class RecordParser {
             String sender = matcher.group("sender");
 
             Record record = new Record();
-            record.setRecipient(targetUrl); //ToDo: ev. shorten or resolve
+
+            Matcher targetMatcher = urlPattern.matcher(targetUrl);
+            if(targetMatcher.find()) {
+                String target = targetMatcher.group("target");
+                record.setRecipient(target);
+            } else {
+                record.setRecipient(null);
+            }
+            record.setUrl(targetUrl);
             record.setSender(sender);
             record.setTime(time);
             record.setHttpMethod(httpMethod);
