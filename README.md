@@ -19,3 +19,5 @@ Second parameter is date pattern. The format is specified by DateTimeFormatter f
 
 Standard Input is used as log input.
 
+## Known issues
+It is planned to extract the receiver of a request by a pattern that is applied to the request url or by analyzing hooks. Until then, the whole url is used as receiver for the plantuml.
