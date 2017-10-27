@@ -5,8 +5,10 @@ It parses logs and outputs plantuml.
 ## How to run
 1. Checkout
 2. mvn install
-3. Run application
-4. The output will be a plantuml diagram (in text format)
+3. cd gapa-cli/target
+4. Run application with command below
+5. The output will be a plantuml diagram (in text format). 
+There is a main method in the gapa-playground module that can generate a png from plantuml.
 
 ```bash
     java -jar gapa-cli-1.0.jar "^(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3})\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+) - %(\\S+)\\s+(?<method>GET|PUT|POST|DELETE)\\s+(?<url>\\S+)\\s+s=(?<sender>\\w+)" "yyyy-MM-dd HH:mm:ss,SSS" < ../../gapa-test/src/test/resources/sample_log 
