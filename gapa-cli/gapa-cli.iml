@@ -13,5 +13,6 @@
     <orderEntry type="library" name="Maven: net.sourceforge.plantuml:plantuml:1.2017.12" level="project" />
     <orderEntry type="module" module-name="gapa-domain" />
     <orderEntry type="library" name="Maven: org.json:json:20171018" level="project" />
+    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
   </component>
 </module>
