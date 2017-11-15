@@ -23,6 +23,26 @@ import java.util.stream.Collectors;
 
 public class Cli {
 
+    static final String defaultInboundRequestPatternStr = "^(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3})" +
+            "\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+) - %(\\S+)\\s+" +
+            "(?<method>GET|PUT|POST|DELETE)" +
+            "\\s+" +
+            "(?<url>\\S+)" +
+            "\\s+s=" +
+            "(?<sender>\\w+)";
+    static final Pattern defaultInboundRequestPattern = Pattern.compile(defaultInboundRequestPatternStr);
+
+    static final String defaultOutboundRequestPatternStr = "^(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}) " +
+            "(?<method>GET|PUT|POST|DELETE) " +
+            "(?<url>\\S+) " +
+            "(?<receiver>\\w+)";
+    static final Pattern defaultOutboundRequestPattern = Pattern.compile(defaultOutboundRequestPatternStr);
+
+    static final Locale usedLocale = Locale.GERMANY;
+
+    static final String defaultDateTimeFormatterStr = "yyyy-MM-dd HH:mm:ss,SSS";
+    static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofPattern(defaultDateTimeFormatterStr, usedLocale);
+
     private static Options getOptions() {
         Options options = new Options();
 
@@ -33,7 +53,8 @@ public class Cli {
         Option inboundRequestPattern = Option.builder("i")
                 .hasArg()
                 .argName("pattern")
-                .desc("The regex pattern for inbound requests. Must contain regex groups: " + inboundRequestPatternGroups)
+                .desc("The regex pattern for inbound requests. Must contain regex groups: " + inboundRequestPatternGroups + ".\n"+
+                "Default: \"" + defaultInboundRequestPatternStr + "\"")
                 .longOpt("inbound-request-pattern")
                 .build();
 
@@ -44,14 +65,17 @@ public class Cli {
         Option outboundRequestPattern = Option.builder("o")
                 .hasArg()
                 .argName("pattern")
-                .desc("The regex pattern for outbound requests. Must contain regex groups: " + outboundRequestPatternGroups)
+                .desc("The regex pattern for outbound requests. Must contain regex groups: " + outboundRequestPatternGroups + ".\n"+
+                "Default: \"" + defaultOutboundRequestPatternStr + "\"")
                 .longOpt("outbound-request-pattern")
                 .build();
 
         Option timeFormat = Option.builder("t")
                 .hasArg()
                 .argName("pattern")
-                .desc("The time pattern. The format is specified by DateTimeFormatter from Java 8 Standard Library. Locale.GERMANY will be used.")
+                .desc("The time pattern. The format is specified by DateTimeFormatter from Java 8 Standard Library." +
+                        "Locale.GERMANY will be used.\n" +
+                        "Default: \"" + defaultDateTimeFormatterStr + "\"")
                 .longOpt("time-format")
                 .build();
 
@@ -104,28 +128,11 @@ public class Cli {
         }
     }
 
-    static Pattern defaultInboundRequestPattern =
-            Pattern.compile("^(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3})" +
-                    "\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+) - %(\\S+)\\s+" +
-                    "(?<method>GET|PUT|POST|DELETE)" +
-                    "\\s+" +
-                    "(?<url>\\S+)" +
-                    "\\s+s=" +
-                    "(?<sender>\\w+)");
-
-    static Pattern defaultOutboundRequestPattern =
-            Pattern.compile("^(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}) " +
-                    "(?<method>GET|PUT|POST|DELETE) " +
-                    "(?<url>\\S+) " +
-                    "(?<receiver>\\w+)");
-
-    static Locale usedLocale = Locale.GERMANY;
-
-    static DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS", usedLocale);
-
     public static void printHelp() {
-        System.out.println("Visualization of communication between services powered by Gateleen. It parses logs and outputs plantuml. " +
-                "If no -f option is given, stdin is used. Logs must be in utf8.");
+        System.out.println("Visualization of communication between services powered by Gateleen.\n" +
+                "It parses logs and outputs plantuml.\n" +
+                "If no -f option is given, stdin is used.\n" +
+                "Logs must be in utf8.");
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp("java -jar /path/to/gapa-cli*.jar <options>", options);
     }
