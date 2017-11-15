@@ -3,7 +3,8 @@ package ch.bfh.ti.gapa.playground;
 import ch.bfh.ti.gapa.process.diagram.SequenceDiagramGenerator;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,9 +17,9 @@ public class PlantUmlPreview {
     public static void main(String[] args) throws IOException {
         String plantUml = ResourceReader.readStringFromResource("/sample.plantuml");
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();
-        Path path = Files.createTempFile("gapa-playground", ".png");
+        Path path = Files.createTempFile("gapa-playground", ".svg");
         OutputStream os = Files.newOutputStream(path);
-        sequenceDiagramGenerator.exportPlantUmlAsPng(plantUml,os);
+        sequenceDiagramGenerator.exportPlantUmlAsSvg(plantUml,os);
         Runtime.getRuntime().exec("firefox " + path.toAbsolutePath().toString());
     }
 }

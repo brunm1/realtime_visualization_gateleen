@@ -135,7 +135,8 @@ public class Cli {
         FAILED_PARSING_INBOUND_REQUEST_PATTERN(2, "Could not parse inbound request pattern."),
         FAILED_PARSING_OUTBOUND_REQUEST_PATTERN(3, "Could not parse outbound request pattern."),
         FAILED_PARSING_DATE_TIME_PATTERN(4, "Could not parse date time pattern."),
-        INVALID_COMMAND_USAGE(5, "Invalid command usage.");
+        INVALID_COMMAND_USAGE(5, "Invalid command usage."),
+        UNRECOGNIZED_ARGUMENTS(6, "Could not recognize some arguments.");
 
         private int code;
         private String desc;
@@ -173,9 +174,14 @@ public class Cli {
             try {
                 CommandLine commandLine = defaultParser.parse(options, args);
 
-                if(commandLine.getArgs().length==0 || commandLine.hasOption("h")) {
+                if(args.length==0 || commandLine.hasOption("h")) {
                     printHelp();
                     System.exit(0);
+                }
+
+                if(commandLine.getArgs().length>0) {
+                    Exception e = new Exception(commandLine.getArgList().stream().collect(Collectors.joining(", ")));
+                    throw new CommandLineException(Error.UNRECOGNIZED_ARGUMENTS, e);
                 }
 
                 //the input object contains the parsed arguments
