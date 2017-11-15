@@ -62,10 +62,16 @@ public class Cli {
                 .longOpt("file-name")
                 .build();
 
+        Option help = Option.builder("h")
+                .desc("Shows this help")
+                .longOpt("help")
+                .build();
+
         options.addOption(inboundRequestPattern);
         options.addOption(outboundRequestPattern);
         options.addOption(timeFormat);
         options.addOption(fileName);
+        options.addOption(help);
 
         return options;
     }
@@ -121,7 +127,7 @@ public class Cli {
         System.out.println("Visualization of communication between services powered by Gateleen. It parses logs and outputs plantuml. " +
                 "If no -f option is given, stdin is used. Logs must be in utf8.");
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp("", options);
+        helpFormatter.printHelp("java -jar /path/to/gapa-cli*.jar <options>", options);
     }
 
     enum Error {
@@ -166,6 +172,11 @@ public class Cli {
         try {
             try {
                 CommandLine commandLine = defaultParser.parse(options, args);
+
+                if(commandLine.getArgs().length==0 || commandLine.hasOption("h")) {
+                    printHelp();
+                    System.exit(0);
+                }
 
                 //the input object contains the parsed arguments
                 Input input = new Input();
