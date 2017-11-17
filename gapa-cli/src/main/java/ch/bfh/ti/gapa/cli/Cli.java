@@ -73,7 +73,7 @@ public class Cli {
         Option timeFormat = Option.builder("t")
                 .hasArg()
                 .argName("pattern")
-                .desc("The time pattern. The format is specified by DateTimeFormatter from Java 8 Standard Library." +
+                .desc("The time pattern used for the regex group 'date'. The format is specified by DateTimeFormatter from Java 8 Standard Library." +
                         "Locale.GERMANY will be used.\n" +
                         "Default: \"" + defaultDateTimeFormatterStr + "\"")
                 .longOpt("time-format")
@@ -133,8 +133,11 @@ public class Cli {
                 "It parses logs and outputs plantuml.\n" +
                 "If no -f option is given, stdin is used.\n" +
                 "Logs must be in utf8.");
+        System.out.println();
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp("java -jar /path/to/gapa-cli*.jar <options>", options);
+        System.out.println();
+        printErrorCodeDoc();
     }
 
     enum Error {
@@ -175,13 +178,20 @@ public class Cli {
         System.exit(e.getError().getCode());
     }
 
+    static void printErrorCodeDoc() {
+        System.out.println("Possible exit codes:");
+        System.out.println("0 - normal termination");
+        System.out.println(Arrays.stream(Error.values())
+                .map(e->e.getCode()+" - "+e.getDesc()).collect(Collectors.joining("\n")));
+    }
+
     public static void main(String[] args) throws IOException {
         DefaultParser defaultParser = new DefaultParser();
         try {
             try {
                 CommandLine commandLine = defaultParser.parse(options, args);
 
-                if(args.length==0 || commandLine.hasOption("h")) {
+                if(commandLine.hasOption("h")) {
                     printHelp();
                     System.exit(0);
                 }
