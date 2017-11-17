@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli;
+package ch.bfh.ti.gapa.process.interfaces;
 
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
