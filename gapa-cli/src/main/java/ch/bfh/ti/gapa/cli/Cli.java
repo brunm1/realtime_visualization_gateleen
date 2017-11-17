@@ -66,7 +66,7 @@ public class Cli {
                 if (commandLine.hasOption("o")) {
                     Pattern inboundRequestPattern;
                     try {
-                        inboundRequestPattern = Pattern.compile(commandLine.getOptionValue("i"));
+                        inboundRequestPattern = Pattern.compile(commandLine.getOptionValue("o"));
                     } catch (PatternSyntaxException e) {
                         throw new CommandLineException(Error.FAILED_PARSING_OUTBOUND_REQUEST_PATTERN, e);
                     }
