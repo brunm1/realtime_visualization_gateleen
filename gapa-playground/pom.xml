@@ -15,5 +15,10 @@
             <artifactId>gapa-process</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ch.bfh.ti.gapa</groupId>
+            <artifactId>gapa-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
