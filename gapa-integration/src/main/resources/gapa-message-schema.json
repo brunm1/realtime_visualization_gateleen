@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Gapa Message",
+  "description": "A message containing data about an inbound or outbound request.",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "description": "When was the message created (ISO 8601).",
+      "format":"date-time"
+    },
+    "method": {
+      "enum": ["GET", "PUT", "POST", "DELETE", "PATCH"],
+      "description": "HTTP Method of the request."
+    },
+    "path": {
+      "type": "string",
+      "description": "The url path of the request."
+    },
+    "type": {
+      "enum": ["inbound", "outbound"],
+      "description": "Defines whether the request is sent (outbound) or received (inbound) by a Gateleen instance."
+    },
+    "peer": {
+      "type": "string",
+      "description": "The name of the service that sent (inbound) or received (outbound) the request."
+    },
+    "traceId": {
+      "type": "string",
+      "description": "Identifies corresponding in- and outbound requests."
+    }
+  },
+  "required": [
+    "timestamp",
+    "method",
+    "path",
+    "type",
+    "peer"
+  ]
+}

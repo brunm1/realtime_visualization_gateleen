@@ -27,5 +27,10 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ch.bfh.ti.gapa</groupId>
+            <artifactId>gateleen-websocket-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
