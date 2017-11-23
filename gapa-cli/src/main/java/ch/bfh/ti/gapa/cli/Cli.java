@@ -51,6 +51,11 @@ public class Cli {
 
                 //try to parse every command line argument and fill the input object with given arguments or
                 //default values
+
+                if(commandLine.hasOption("w")) {
+                    input.setWebsocketUri(commandLine.getOptionValue("w"));
+                }
+
                 if (commandLine.hasOption("i")) {
                     Pattern inboundRequestPattern;
                     try {

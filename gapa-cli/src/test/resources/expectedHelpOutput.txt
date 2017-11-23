@@ -34,6 +34,8 @@ usage: java -jar /path/to/gapa-cli*.jar <options>
                                            will be used.
                                            Default: "yyyy-MM-dd
                                            HH:mm:ss,SSS"
+ -w,--websocket <uri>                      Connect over websocket to this
+                                           URI.
 
 Possible exit codes:
 0 - normal termination

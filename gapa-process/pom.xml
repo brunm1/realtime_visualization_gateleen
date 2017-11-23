@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>ch.bfh.ti.gapa</groupId>
-            <artifactId>gateleen-websocket-integration</artifactId>
+            <artifactId>gapa-integration</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

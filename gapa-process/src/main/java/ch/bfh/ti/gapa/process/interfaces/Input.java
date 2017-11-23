@@ -9,6 +9,7 @@ public class Input {
     private Pattern outboundRequestPattern;
     private DateTimeFormatter dateTimeFormatter;
     private InputStream inputStream;
+    private String websocketUri;
 
     public Pattern getInboundRequestPattern() {
         return inboundRequestPattern;
@@ -40,5 +41,13 @@ public class Input {
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+
+    public String getWebsocketUri() {
+        return websocketUri;
+    }
+
+    public void setWebsocketUri(String websocketUri) {
+        this.websocketUri = websocketUri;
     }
 }

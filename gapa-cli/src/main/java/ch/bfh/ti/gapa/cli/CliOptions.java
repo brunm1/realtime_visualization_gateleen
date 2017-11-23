@@ -62,10 +62,18 @@ class CliOptions {
                 .longOpt("help")
                 .build();
 
+        Option websocketUri = Option.builder("w")
+                .desc("Connect over websocket to this URI.")
+                .hasArg()
+                .argName("uri")
+                .longOpt("websocket")
+                .build();
+
         options.addOption(inboundRequestPattern);
         options.addOption(outboundRequestPattern);
         options.addOption(timeFormat);
         options.addOption(fileName);
         options.addOption(help);
+        options.addOption(websocketUri);
     }
 }
