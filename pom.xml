@@ -5,7 +5,7 @@
     <groupId>ch.bfh.ti.gapa</groupId>
     <artifactId>gapa</artifactId>
     <packaging>pom</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <modules>
         <module>gapa-config</module>
         <module>gapa-database</module>
@@ -20,7 +20,7 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:brunm1/realtime_visualization_gateleen.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>gapa-1.1</tag>
   </scm>
 
     <dependencyManagement>
