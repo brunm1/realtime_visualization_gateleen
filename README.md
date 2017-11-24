@@ -11,7 +11,7 @@ It parses logs and outputs plantuml.
 4. Run application with command below (assuming an compatible gateleen instance is running on port 7012)
 
 ```bash
-    java -jar gapa-cli-1.0.jar -w ws://localhost:7012
+    java -jar gapa-cli-1.1.jar -w ws://localhost:7012
 ```
 
 5. The output will be a plantuml diagram (in text format). 
