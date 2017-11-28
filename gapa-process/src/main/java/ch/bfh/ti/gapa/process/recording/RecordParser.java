@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static ch.bfh.ti.gapa.process.recording.InboundRequestPatternGroup.*;
+
 /**
  * Created by adrian on 20.10.17.
  */
@@ -26,11 +28,11 @@ public class RecordParser {
         Matcher matcher = logPattern.matcher(logEntry);
 
         if(matcher.find()) {
-            String dateString = matcher.group("date");
+            String dateString = matcher.group(DATE.getName());
             LocalDateTime time = LocalDateTime.parse(dateString, timeFormat);
-            String httpMethod = matcher.group("method");
-            String targetUrl = matcher.group("url");
-            String sender = matcher.group("sender");
+            String httpMethod = matcher.group(METHOD.getName());
+            String targetUrl = matcher.group(URL.getName());
+            String sender = matcher.group(SENDER.getName());
 
             Record record = new Record();
 

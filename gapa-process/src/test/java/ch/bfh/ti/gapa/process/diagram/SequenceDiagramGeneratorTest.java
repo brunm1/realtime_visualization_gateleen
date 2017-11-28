@@ -17,9 +17,18 @@ class SequenceDiagramGeneratorTest {
         message.setLabel("We have a problem");
         messages.add(message);
 
+        SequenceDiagramMessage weirdMessage = new SequenceDiagramMessage();
+        weirdMessage.setFrom("/]{}à£è/&(/%");
+        weirdMessage.setTo("What?");
+        weirdMessage.setLabel("////>>>");
+        messages.add(weirdMessage);
+
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();
         String result = sequenceDiagramGenerator.generatePlantUmlSequenceDiagram(messages);
-        assertEquals("@startuml\nSpaceship -> Houston : We have a problem\n@enduml", result);
+        assertEquals("@startuml\n" +
+                "Spaceship -> Houston : We have a problem\n" +
+                "\"/]{}à£è/&(/%\" -> \"What?\" : ////>>>\n" +
+                "@enduml", result);
     }
 
 }
