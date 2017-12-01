@@ -1,6 +1,9 @@
 package ch.bfh.ti.gapa.process.interfaces;
 
+import org.json.JSONArray;
+
 import java.io.InputStream;
+import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
@@ -9,7 +12,8 @@ public class Input {
     private Pattern outboundRequestPattern;
     private DateTimeFormatter dateTimeFormatter;
     private InputStream inputStream;
-    private String websocketUri;
+    private URI websocketUri;
+    private JSONArray filters;
 
     public Pattern getInboundRequestPattern() {
         return inboundRequestPattern;
@@ -43,11 +47,19 @@ public class Input {
         this.inputStream = inputStream;
     }
 
-    public String getWebsocketUri() {
+    public URI getWebsocketUri() {
         return websocketUri;
     }
 
-    public void setWebsocketUri(String websocketUri) {
+    public void setWebsocketUri(URI websocketUri) {
         this.websocketUri = websocketUri;
+    }
+
+    public JSONArray getFilters() {
+        return filters;
+    }
+
+    public void setFilters(JSONArray filters) {
+        this.filters = filters;
     }
 }
