@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Or Filter",
+  "description": "specifies a filter which consists of several other filters that are connected by the OR operation",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "default": "orFilter"
+    },
+    "name": {
+      "type": "string",
+      "description": "name of the filter, so the filter can be toggled by name",
+      "default": ""
+    },
+    "filters": {
+      "type": "array",
+      "description": "filters defining the OrFilter"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "If active is false, the filter won't be applied",
+      "default": true
+    }
+  },
+  "required": [
+    "type",
+    "filters"
+  ]
+}

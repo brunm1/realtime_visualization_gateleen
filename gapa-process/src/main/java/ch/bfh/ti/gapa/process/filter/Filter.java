@@ -1,6 +1,7 @@
 package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
+import org.json.JSONObject;
 
 /**
  * Created by adrian on 18.10.17.

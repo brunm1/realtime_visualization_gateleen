@@ -1,0 +1,6 @@
+{
+  "type": "genericRegexFilter",
+  "name": "myFirstRegexFilter",
+  "attribute": "url",
+  "pattern": "/gateleen/server/.*"
+}

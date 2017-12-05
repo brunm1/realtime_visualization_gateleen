@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Time Filter",
+  "description": "specifies a filter which filters messages/records that are either before or after a given date",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "name of the filter, so the filter can be toggled by name",
+      "default": ""
+    },
+    "time": {
+      "type": "string",
+      "description": "Time which will be the threshold whether a message passes the filter or not.",
+      "format": "date-time"
+    },
+    "before": {
+      "type": "boolean",
+      "description": "If true, only messages before the given time will pass. Otherwise only messages after the given time pass.",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "description": "If active is false, the filter won't be applied",
+      "default": true
+    }
+  },
+  "required": [
+    "type",
+    "time"
+  ]
+}

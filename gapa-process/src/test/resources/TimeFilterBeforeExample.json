@@ -1,0 +1,6 @@
+{
+  "type": "timeFilter",
+  "name": "myFirstTimeFilter",
+  "time": "2017-12-01T20:00:00Z",
+  "before": true
+}

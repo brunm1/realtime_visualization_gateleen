@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "And Filter",
+  "description": "specifies a filter which consists of several other filters that are connected by the AND operation",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "name of the filter, so the filter can be toggled by name",
+      "default": ""
+    },
+    "filters": {
+      "type": "array",
+      "description": "filters defining the AndFilter"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "If active is false, the filter won't be applied",
+      "default": true
+    }
+  },
+  "required": [
+    "type",
+    "filters"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Generic Regex Filter",
+  "description": "specifies a filter which filters messages/records that match the given regex pattern with the selected attribute",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "name of the filter, so the filter can be toggled by name",
+      "default": ""
+    },
+    "pattern": {
+      "type": "string",
+      "description": "regex pattern that has to be matched"
+    },
+    "attribute": {
+      "type": "string",
+      "description": "attribute on which the regex will be applied"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "If active is false, the filter won't be applied",
+      "default": true
+    }
+  },
+  "required": [
+    "type",
+    "pattern",
+    "attribute"
+  ]
+}
