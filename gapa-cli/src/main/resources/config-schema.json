@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Gapa Configuration",
+  "description": "JSON schema for a Gapa configuration.",
+  "type": "object",
+  "properties": {
+    "filters": {
+      "type": "array",
+      "description": "An array of filters"
+    },
+    "websocketUri": {
+      "type": "string",
+      "description": "Websocket URI. Gapa connects to this websocket."
+    }
+  },
+  "required": [
+    "websocketUri"
+  ]
+}

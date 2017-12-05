@@ -2,7 +2,6 @@ package ch.bfh.ti.gapa.process.interfaces;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 import ch.bfh.ti.gapa.integration.client.Client;
-import ch.bfh.ti.gapa.integration.client.converter.GapaMessageReceiver;
 import ch.bfh.ti.gapa.integration.client.converter.JsonToGapaMessageConverter;
 import ch.bfh.ti.gapa.integration.client.socket.GapaWebSocketClient;
 import ch.bfh.ti.gapa.integration.client.socket.StringReceiver;
@@ -27,17 +26,16 @@ import java.util.stream.Collectors;
 public class ProcessLayerImpl implements ProcessLayer{
     @Override
     public String process(Input input) throws IOException {
+        //TODO validate input.getFilterConfiguration() and
+
+        //TODO create filters from JSONArray
         if(input.getWebsocketUri() != null) {
             GapaMessageRecorder gapaMessageRecorder = new GapaMessageRecorder();
             JsonReceiver jsonReceiver = new JsonToGapaMessageConverter(gapaMessageRecorder);
             StringReceiver stringReceiver = new GapaMessageJsonValidator(jsonReceiver);
             Client gapaWebsocketClient =
                     null;
-            try {
-                gapaWebsocketClient = new GapaWebSocketClient(new URI(input.getWebsocketUri()), stringReceiver);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            gapaWebsocketClient = new GapaWebSocketClient(input.getWebsocketUri(), stringReceiver);
 
             Client finalGapaWebsocketClient = gapaWebsocketClient;
             Thread t = new Thread(() -> {
@@ -66,6 +64,7 @@ public class ProcessLayerImpl implements ProcessLayer{
             }).collect(Collectors.toList());
 
             //process records and output plantUml diagram
+            //TODO apply filters
             return new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(records);
         } else {
             //parse logs and produce records
@@ -77,6 +76,7 @@ public class ProcessLayerImpl implements ProcessLayer{
             List<Record> records = recordParser.batchParse(log);
 
             //process records and output plantUml diagram
+            //TODO apply filters
             return new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(records);
         }
     }
