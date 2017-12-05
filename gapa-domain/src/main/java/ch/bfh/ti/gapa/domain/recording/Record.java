@@ -51,4 +51,19 @@ public class Record {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public CharSequence get(String attribute) {
+        switch (attribute) {
+            case "sender":
+                return getSender();
+            case "recipient":
+                return getRecipient();
+            case "url":
+                return getUrl();
+            case "httpMethod":
+                return getHttpMethod();
+            default:
+                return null;
+        }
+    }
 }
