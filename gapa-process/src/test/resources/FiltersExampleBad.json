@@ -1,0 +1,40 @@
+[
+  {
+    "type": "andFilter",
+    "name": "AndFilterExample",
+    "filters": [
+      {
+        "type": "timeFilter",
+        "time": "2017-12-01T20:00:00Z"
+      },
+      {
+        "type": "genericRegexFilter",
+        "attribute": "url",
+        "pattern": "/gateleen/server/.*"
+      }
+    ]
+  },
+  {
+    "type": "orFilter",
+    "name": "OrFilterExample",
+    "filters": [
+      {
+        "type": "timeFilter",
+        "time": "2017-12-01T20:00:00Z"
+      },
+      {
+        "type": "genericRegexFilter",
+        "attribute": "url",
+        "pattern": "/gateleen/server/.*"
+      }
+    ]
+  },
+  {
+    "time": "2017-12-01T20:00:00Z"
+  },
+  {
+    "type": "genericRegexFilter",
+    "attribute": "url",
+    "pattern": "/gateleen/server/.*"
+  }
+]

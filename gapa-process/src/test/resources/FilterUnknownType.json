@@ -1,0 +1,5 @@
+{
+  "type": "specificRegexFilter",
+  "attribute": "url",
+  "pattern": "/gateleen/server/.*"
+}
