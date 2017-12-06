@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +16,7 @@ class GenericRegexFilterTest {
     void filter() {
         try {
             String filterString = ResourceReader.readStringFromResource("/GenericRegexFilterExample.json");
-            Filter filter = new GenericRegexFilter(new JSONObject(filterString));
+            Predicate<Record> filter = new GenericRegexFilter(new JSONObject(filterString));
 
             Record record = new Record();
             record.setHttpMethod("PUT");
@@ -24,7 +25,7 @@ class GenericRegexFilterTest {
             record.setTime(LocalDateTime.now());
             record.setUrl("/gateleen/server/events");
 
-            assertTrue(filter.filter(record));
+            assertTrue(filter.test(record));
 
         } catch (IOException e) {
             e.printStackTrace();

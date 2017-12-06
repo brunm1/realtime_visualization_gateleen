@@ -11,8 +11,8 @@ class FromTimeFilterTest {
     @Test
     void filter() {
         FromTimeFilter fromTimeFilter = new FromTimeFilter(LocalDateTime.parse("2017-10-25T12:00"));
-        assertFalse(fromTimeFilter.filter(RecordMock.record1));
-        assertTrue(fromTimeFilter.filter(RecordMock.record2));
+        assertFalse(fromTimeFilter.test(RecordMock.record1));
+        assertTrue(fromTimeFilter.test(RecordMock.record2));
     }
 
 }

@@ -4,14 +4,15 @@ import ch.bfh.ti.gapa.domain.recording.Record;
 import ch.bfh.ti.gapa.domain.recording.Recording;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class Subset {
-    private List<Filter> filters;
+    private List<Predicate<Record>> filters;
     private Recording recording;
 
-    Subset(List<Filter> filters, Recording recording) {
+    Subset(List<Predicate<Record>> filters, Recording recording) {
         this.filters = filters;
         this.recording = recording;
     }
@@ -22,8 +23,8 @@ class Subset {
      */
     List<Record> getRecords() {
         Stream<Record> stream = recording.getRecords().stream();
-        for(Filter filter: filters) {
-            stream = stream.filter(filter::filter);
+        for(Predicate<Record> filter: filters) {
+            stream = stream.filter(filter::test);
         }
         return stream.collect(Collectors.toList());
     }

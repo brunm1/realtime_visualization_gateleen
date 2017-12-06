@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.function.Predicate;
 
-public class TimeFilter implements Filter{
+public class TimeFilter implements Predicate<Record> {
     private final static Schema schema;
     String name;
     LocalDateTime time;
@@ -48,7 +49,7 @@ public class TimeFilter implements Filter{
     }
 
     @Override
-    public boolean filter(Record record) {
+    public boolean test(Record record) {
         if(before) {
             return record.getTime().isBefore(time);
         } else {

@@ -9,10 +9,11 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GenericRegexFilter implements Filter {
+public class GenericRegexFilter implements Predicate<Record> {
     private final static Schema schema;
     private String name = "";
     private Pattern pattern;
@@ -44,7 +45,7 @@ public class GenericRegexFilter implements Filter {
     }
 
     @Override
-    public boolean filter(Record record) {
+    public boolean test(Record record) {
         if(record.get(attribute) == null) {
             return false;
         }

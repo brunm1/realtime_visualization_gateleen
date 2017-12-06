@@ -2,7 +2,9 @@ package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 
-public abstract class StringEqualFilter implements Filter{
+import java.util.function.Predicate;
+
+public abstract class StringEqualFilter implements Predicate<Record> {
     private String string;
 
     StringEqualFilter(String string) {

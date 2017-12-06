@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +17,7 @@ class TimeFilterTest {
     public void filter() {
         try {
             String filterJson = ResourceReader.readStringFromResource("/TimeFilterExample.json");
-            Filter filter = new TimeFilter(new JSONObject(filterJson));
+            Predicate<Record> filter = new TimeFilter(new JSONObject(filterJson));
 
             Record record = new Record();
             record.setHttpMethod("PUT");
@@ -25,12 +26,12 @@ class TimeFilterTest {
             record.setTime(LocalDateTime.now());
             record.setUrl("/gateleen/server/events");
 
-            assertTrue(filter.filter(record));
+            assertTrue(filter.test(record));
 
             filterJson = ResourceReader.readStringFromResource("/TimeFilterBeforeExample.json");
             filter = new TimeFilter(new JSONObject(filterJson));
 
-            assertFalse(filter.filter(record));
+            assertFalse(filter.test(record));
 
         } catch (IOException e) {
             //ToDo

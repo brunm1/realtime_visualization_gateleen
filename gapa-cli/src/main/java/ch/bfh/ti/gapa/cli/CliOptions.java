@@ -69,11 +69,19 @@ class CliOptions {
                 .longOpt("websocket")
                 .build();
 
+        Option config = Option.builder("c")
+                .desc("Set a config file")
+                .hasArg()
+                .argName("fileName")
+                .longOpt("--config")
+                .build();
+
         options.addOption(inboundRequestPattern);
         options.addOption(outboundRequestPattern);
         options.addOption(timeFormat);
         options.addOption(fileName);
         options.addOption(help);
         options.addOption(websocketUri);
+        options.addOption(config);
     }
 }

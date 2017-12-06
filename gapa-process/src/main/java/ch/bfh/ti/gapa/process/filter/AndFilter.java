@@ -10,9 +10,10 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
-public class AndFilter implements Filter {
-    List<Filter> filters;
+public class AndFilter implements Predicate<Record> {
+    List<Predicate<Record>> filters;
     String name;
     private static final Schema schema;
 
@@ -35,10 +36,10 @@ public class AndFilter implements Filter {
     }
 
     @Override
-    public boolean filter(Record record) {
-        Iterator<Filter> it = filters.iterator();
+    public boolean test(Record record) {
+        Iterator<Predicate<Record>> it = filters.iterator();
         while (it.hasNext()) {
-            if(!it.next().filter(record)) {
+            if(!it.next().test(record)) {
                 return false;
             }
         }

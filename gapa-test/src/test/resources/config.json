@@ -1,0 +1,10 @@
+{
+  "websocketUri": "http://localhost:7012",
+  "filters": [
+    {
+      "type": "timeFilter",
+      "name": "myFirstTimeFilter",
+      "time": "2017-12-01T20:00:00Z"
+    }
+  ]
+}

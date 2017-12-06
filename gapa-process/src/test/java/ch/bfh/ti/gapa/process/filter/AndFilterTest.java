@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +18,7 @@ class AndFilterTest {
         try {
             filterJson = ResourceReader.readStringFromResource("/AndFilterExample.json");
 
-            Filter filter = new AndFilter(new JSONObject(filterJson));
+            Predicate<Record> filter = new AndFilter(new JSONObject(filterJson));
 
             Record record = new Record();
             record.setHttpMethod("PUT");
@@ -26,10 +27,10 @@ class AndFilterTest {
             record.setTime(LocalDateTime.now());
             record.setUrl("/gateleen/server/events");
 
-            assertTrue(filter.filter(record));
+            assertTrue(filter.test(record));
 
             record.setUrl("/playground/test");
-            assertFalse(filter.filter(record)); //The time filter should still be fine, but the regex filter won't return true
+            assertFalse(filter.test(record)); //The time filter should still be fine, but the regex filter won't return true
         } catch (IOException e) {
             e.printStackTrace();
         }

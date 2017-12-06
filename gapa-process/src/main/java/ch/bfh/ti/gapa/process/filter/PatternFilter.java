@@ -2,9 +2,10 @@ package ch.bfh.ti.gapa.process.filter;
 
 import ch.bfh.ti.gapa.domain.recording.Record;
 
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public abstract class PatternFilter implements Filter{
+public abstract class PatternFilter implements Predicate<Record> {
     private Pattern pattern;
 
     PatternFilter(Pattern pattern) {

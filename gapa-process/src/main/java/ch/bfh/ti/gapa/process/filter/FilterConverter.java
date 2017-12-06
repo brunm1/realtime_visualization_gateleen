@@ -1,21 +1,23 @@
 package ch.bfh.ti.gapa.process.filter;
 
+import ch.bfh.ti.gapa.domain.recording.Record;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class FilterConverter {
-    public static List<Filter> convert(JSONArray jsonArray) {
-        ArrayList<Filter> filters = new ArrayList<>();
+    public static List<Predicate<Record>> convert(JSONArray jsonArray) {
+        ArrayList<Predicate<Record>> filters = new ArrayList<>();
         for(int i=0; i<jsonArray.length(); i++) {
             filters.add(convertToFilter(jsonArray.getJSONObject(i)));
         }
         return filters;
     }
 
-    public static Filter convertToFilter(JSONObject filterJson) {
+    public static Predicate<Record>  convertToFilter(JSONObject filterJson) {
         switch (filterJson.getString("type")) {
             case "genericRegexFilter":
                 return new GenericRegexFilter(filterJson);

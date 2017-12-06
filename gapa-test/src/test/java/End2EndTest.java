@@ -27,7 +27,8 @@ class End2EndTest {
         ProcessBuilder builder = new ProcessBuilder(
                 "java", "-jar",
                 cliJar.getAbsolutePath(),
-                "-w", "ws://localhost:8888");
+                "-w", "ws://localhost:7012",
+                "-c", "config.json");
         builder.redirectErrorStream(true);
         Process process = builder.start();
 
