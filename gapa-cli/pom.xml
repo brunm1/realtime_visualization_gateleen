@@ -63,12 +63,13 @@
                             </mainClass>
                         </manifest>
                     </archive>
+                    <finalName>gapa</finalName>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${org.apache.maven.plugins.maven-shade-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
