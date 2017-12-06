@@ -1,8 +1,8 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.parsing.RawInputParser;
-import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReader;
-import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;

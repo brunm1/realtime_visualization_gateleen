@@ -1,4 +1,6 @@
-package ch.bfh.ti.gapa.cli.parsing;
+package ch.bfh.ti.gapa.cli.config.parsing;
+
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInputField;
 
 public class ParseException extends Throwable{
     private RawInputField rawInputField;

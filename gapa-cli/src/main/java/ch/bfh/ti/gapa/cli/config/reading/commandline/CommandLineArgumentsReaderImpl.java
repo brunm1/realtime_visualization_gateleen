@@ -1,10 +1,10 @@
-package ch.bfh.ti.gapa.cli.reading.commandline;
+package ch.bfh.ti.gapa.cli.config.reading.commandline;
 
-import ch.bfh.ti.gapa.cli.parsing.RawInputParser;
-import ch.bfh.ti.gapa.cli.raw.RawInput;
-import ch.bfh.ti.gapa.cli.reading.file.ConfigFileReader;
-import ch.bfh.ti.gapa.cli.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
 import org.apache.commons.cli.CommandLine;
 
 import java.nio.file.Path;

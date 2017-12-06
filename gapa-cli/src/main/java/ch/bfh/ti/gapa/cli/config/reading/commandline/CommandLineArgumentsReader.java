@@ -1,6 +1,6 @@
-package ch.bfh.ti.gapa.cli.reading.commandline;
+package ch.bfh.ti.gapa.cli.config.reading.commandline;
 
-import ch.bfh.ti.gapa.cli.raw.RawInput;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import org.apache.commons.cli.CommandLine;
 
 public interface CommandLineArgumentsReader {

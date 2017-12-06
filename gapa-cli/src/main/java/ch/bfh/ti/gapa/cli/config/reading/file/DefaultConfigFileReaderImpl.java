@@ -1,11 +1,9 @@
-package ch.bfh.ti.gapa.cli.reading.file;
+package ch.bfh.ti.gapa.cli.config.reading.file;
 
 import ch.bfh.ti.gapa.cli.Cli;
-import ch.bfh.ti.gapa.cli.raw.RawInput;
-import ch.bfh.ti.gapa.cli.reading.file.ConfigFileReader;
-import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReader;
-import ch.bfh.ti.gapa.cli.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;

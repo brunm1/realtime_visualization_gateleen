@@ -1,6 +1,6 @@
-package ch.bfh.ti.gapa.cli.reading.file.json;
+package ch.bfh.ti.gapa.cli.config.reading.file.json;
 
-import ch.bfh.ti.gapa.cli.raw.RawInput;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import org.json.JSONObject;
 
 /**

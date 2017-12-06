@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.raw;
+package ch.bfh.ti.gapa.cli.config.reading.model;
 
 import org.json.JSONArray;
 

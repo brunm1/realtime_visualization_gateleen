@@ -1,16 +1,16 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.reading.file.json.JsonReaderImpl;
-import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidator;
-import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidatorImpl;
-import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReader;
-import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReaderImpl;
-import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReader;
-import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReaderImpl;
-import ch.bfh.ti.gapa.cli.parsing.RawInputParser;
-import ch.bfh.ti.gapa.cli.parsing.RawInputParserImpl;
-import ch.bfh.ti.gapa.cli.raw.RawInput;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReaderImpl;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
@@ -37,7 +37,7 @@ public class Cli {
     }
 
     private void printError(CommandLineException e) {
-        System.out.println(e.getError().getDesc() + " Cause: " + e.getThrowable().getMessage());
+        System.out.println(e.getExceptionType().getDesc() + " Cause: " + e.getThrowable().getMessage());
     }
 
     int run(String[] args) {
@@ -53,7 +53,7 @@ public class Cli {
 
                 if (commandLine.getArgs().length > 0) {
                     Exception e = new Exception(commandLine.getArgList().stream().collect(Collectors.joining(", ")));
-                    throw new CommandLineException(Error.UNRECOGNIZED_ARGUMENTS, e);
+                    throw new CommandLineException(ExceptionType.UNRECOGNIZED_ARGUMENTS, e);
                 }
 
                 //The RawInput instance stores all configuration that is read in from the default
@@ -63,37 +63,37 @@ public class Cli {
                 try {
                     defaultConfigFileReader.read(rawInput);
                 } catch (Throwable t) {
-                    throw new CommandLineException(Error.DEFAULT_CONFIG_LOADING_FAILED, t);
+                    throw new CommandLineException(ExceptionType.DEFAULT_CONFIG_LOADING_FAILED, t);
                 }
 
                 try {
                     commandLineArgumentsReader.read(rawInput, commandLine);
                 } catch (Throwable t) {
-                    throw new CommandLineException(Error.USER_CONFIG_LOADING_FAILED, t);
+                    throw new CommandLineException(ExceptionType.USER_CONFIG_LOADING_FAILED, t);
                 }
 
                 Input input = new Input();
                 try {
                     rawInputParser.parse(rawInput, input);
                 } catch (Throwable t) {
-                    throw new CommandLineException(Error.CONFIG_PARSING_FAILED, t);
+                    throw new CommandLineException(ExceptionType.CONFIG_PARSING_FAILED, t);
                 }
 
                 String plantUmlDiagram;
                 try {
                     plantUmlDiagram = processLayer.process(input);
                 } catch (Throwable t) {
-                    throw new CommandLineException(Error.PROCESS_LOGIC_FAILED, t);
+                    throw new CommandLineException(ExceptionType.PROCESS_LOGIC_FAILED, t);
                 }
 
                 System.out.print(plantUmlDiagram);
             } catch (ParseException e) {
-                throw new CommandLineException(Error.INVALID_COMMAND_USAGE, e);
+                throw new CommandLineException(ExceptionType.INVALID_COMMAND_USAGE, e);
             }
         } catch (CommandLineException e) {
             //Print error message and exit with error code.
             printError(e);
-            return e.getError().getCode();
+            return e.getExceptionType().getCode();
         }
         return 0;
     }

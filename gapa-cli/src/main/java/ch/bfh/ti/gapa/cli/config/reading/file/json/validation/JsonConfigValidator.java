@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.reading.file.json.validation;
+package ch.bfh.ti.gapa.cli.config.reading.file.json.validation;
 
 import org.json.JSONObject;
 

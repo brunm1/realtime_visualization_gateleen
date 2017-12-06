@@ -1,16 +1,16 @@
 package ch.bfh.ti.gapa.cli;
 
 class CommandLineException extends Throwable {
-    private Error error;
+    private ExceptionType exceptionType;
     private Throwable throwable;
 
-    CommandLineException(Error error, Throwable throwable) {
-        this.error = error;
+    CommandLineException(ExceptionType exceptionType, Throwable throwable) {
+        this.exceptionType = exceptionType;
         this.throwable = throwable;
     }
 
-    Error getError() {
-        return error;
+    ExceptionType getExceptionType() {
+        return exceptionType;
     }
 
     Throwable getThrowable() {
