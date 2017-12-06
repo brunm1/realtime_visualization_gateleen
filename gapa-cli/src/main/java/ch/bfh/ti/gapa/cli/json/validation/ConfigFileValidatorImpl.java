@@ -9,6 +9,10 @@ import org.json.JSONTokener;
 
 import java.io.InputStream;
 
+/**
+ * Validates configuration JSON data. It uses
+ * the config-schema.json JSON schema for that.
+ */
 public class ConfigFileValidatorImpl implements ConfigFileValidator {
     private Schema schema;
 
@@ -31,6 +35,14 @@ public class ConfigFileValidatorImpl implements ConfigFileValidator {
         }
     }
 
+    /**
+     * Uses the schema to validate the data and returns a
+     * JSONObject if the validation was successful.
+     * @param jsonInputStream input stream containing json data
+     * @return a valid json object if json data was valid
+     * @throws IllegalArgumentException if the data was not valid
+     */
+    @Override
     public JSONObject validate(InputStream jsonInputStream) {
         JSONObject jsonObject = inputStreamToJsonObject(jsonInputStream);
         try {
