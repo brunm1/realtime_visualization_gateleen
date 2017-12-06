@@ -21,7 +21,8 @@ import org.apache.commons.cli.ParseException;
 import java.util.stream.Collectors;
 
 import static ch.bfh.ti.gapa.cli.CliOptions.options;
-import static ch.bfh.ti.gapa.cli.HelpPrinter.printHelp;
+import static ch.bfh.ti.gapa.cli.InfoPrinter.printHelp;
+import static ch.bfh.ti.gapa.cli.InfoPrinter.printVersion;
 
 public class Cli {
     private ProcessLayer processLayer;
@@ -48,6 +49,11 @@ public class Cli {
 
                 if (commandLine.hasOption("h")) {
                     printHelp();
+                    return 0;
+                }
+
+                if(commandLine.hasOption("v")) {
+                    printVersion();
                     return 0;
                 }
 

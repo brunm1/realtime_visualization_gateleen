@@ -26,8 +26,14 @@ class CliOptions {
                 .longOpt("config")
                 .build();
 
+        Option version = Option.builder("v")
+                .desc("Print version number.")
+                .longOpt("version")
+                .build();
+
         options.addOption(help);
         options.addOption(websocketUri);
         options.addOption(config);
+        options.addOption(version);
     }
 }
