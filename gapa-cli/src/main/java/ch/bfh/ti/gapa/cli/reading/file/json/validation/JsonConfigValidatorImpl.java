@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.json.validation;
+package ch.bfh.ti.gapa.cli.reading.file.json.validation;
 
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
@@ -13,10 +13,10 @@ import java.io.InputStream;
  * Validates configuration JSON data. It uses
  * the config-schema.json JSON schema for that.
  */
-public class ConfigFileValidatorImpl implements ConfigFileValidator {
+public class JsonConfigValidatorImpl implements JsonConfigValidator {
     private Schema schema;
 
-    public ConfigFileValidatorImpl() {
+    public JsonConfigValidatorImpl() {
         //Get InputStream for json schema
         InputStream schemaInputStream = this.getClass().getResourceAsStream("/config-schema.json");
 

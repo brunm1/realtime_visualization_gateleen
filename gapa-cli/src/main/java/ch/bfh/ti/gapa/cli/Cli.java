@@ -1,15 +1,16 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.json.converter.JsonToRawInputConverter;
-import ch.bfh.ti.gapa.cli.json.converter.JsonToRawInputConverterImpl;
-import ch.bfh.ti.gapa.cli.json.validation.ConfigFileValidator;
-import ch.bfh.ti.gapa.cli.json.validation.ConfigFileValidatorImpl;
-import ch.bfh.ti.gapa.cli.loader.CommandLineArgumentsLoader;
-import ch.bfh.ti.gapa.cli.loader.CommandLineArgumentsLoaderImpl;
-import ch.bfh.ti.gapa.cli.loader.DefaultConfigLoader;
-import ch.bfh.ti.gapa.cli.loader.DefaultConfigLoaderImpl;
+import ch.bfh.ti.gapa.cli.reading.file.json.JsonReader;
+import ch.bfh.ti.gapa.cli.reading.file.json.JsonReaderImpl;
+import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.reading.file.json.validation.JsonConfigValidatorImpl;
+import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReader;
+import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReaderImpl;
+import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.parsing.RawInputParserImpl;
+import ch.bfh.ti.gapa.cli.raw.RawInput;
 import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
@@ -24,14 +25,15 @@ import static ch.bfh.ti.gapa.cli.HelpPrinter.printHelp;
 
 public class Cli {
     private ProcessLayer processLayer;
+    private DefaultConfigFileReader defaultConfigFileReader;
+    private CommandLineArgumentsReader commandLineArgumentsReader;
+    private RawInputParser rawInputParser;
 
-    private DefaultConfigLoader defaultConfigLoader;
-    private CommandLineArgumentsLoader commandLineArgumentsLoader;
-
-    public Cli(ProcessLayer processLayer, DefaultConfigLoader defaultConfigLoader, CommandLineArgumentsLoader commandLineArgumentsLoader) {
+    public Cli(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader, CommandLineArgumentsReader commandLineArgumentsReader, RawInputParser rawInputParser) {
         this.processLayer = processLayer;
-        this.defaultConfigLoader = defaultConfigLoader;
-        this.commandLineArgumentsLoader = commandLineArgumentsLoader;
+        this.defaultConfigFileReader = defaultConfigFileReader;
+        this.commandLineArgumentsReader = commandLineArgumentsReader;
+        this.rawInputParser = rawInputParser;
     }
 
     private void printError(CommandLineException e) {
@@ -54,19 +56,27 @@ public class Cli {
                     throw new CommandLineException(Error.UNRECOGNIZED_ARGUMENTS, e);
                 }
 
-                //The input type is defined in the process layer and contains all data that will be passed to the process layer.
-                Input input = new Input();
+                //The RawInput instance stores all configuration that is read in from the default
+                //config file, the user given config file and the command line arguments.
+                RawInput rawInput = new RawInput();
 
                 try {
-                    defaultConfigLoader.loadInput(input);
+                    defaultConfigFileReader.read(rawInput);
                 } catch (Throwable t) {
                     throw new CommandLineException(Error.DEFAULT_CONFIG_LOADING_FAILED, t);
                 }
 
                 try {
-                    commandLineArgumentsLoader.loadInput(input, commandLine);
+                    commandLineArgumentsReader.read(rawInput, commandLine);
                 } catch (Throwable t) {
                     throw new CommandLineException(Error.USER_CONFIG_LOADING_FAILED, t);
+                }
+
+                Input input = new Input();
+                try {
+                    rawInputParser.parse(rawInput, input);
+                } catch (Throwable t) {
+                    throw new CommandLineException(Error.CONFIG_PARSING_FAILED, t);
                 }
 
                 String plantUmlDiagram;
@@ -90,19 +100,19 @@ public class Cli {
 
     public static void main(String[] args) {
         ProcessLayer processLayer = new ProcessLayerImpl();
-        ConfigFileValidator configFileValidator = new ConfigFileValidatorImpl();
-        JsonToRawInputConverter jsonToRawInputConverter = new JsonToRawInputConverterImpl();
+        JsonConfigValidator jsonConfigValidator = new JsonConfigValidatorImpl();
+        JsonReader jsonReader = new JsonReaderImpl();
         RawInputParser rawInputParser = new RawInputParserImpl();
-        DefaultConfigLoader defaultConfigLoader = new DefaultConfigLoaderImpl(
-                configFileValidator, jsonToRawInputConverter, rawInputParser
+        DefaultConfigFileReader defaultConfigFileReader = new DefaultConfigFileReaderImpl(
+                jsonConfigValidator, jsonReader
         );
-        CommandLineArgumentsLoaderImpl commandLineArgumentsLoader = new CommandLineArgumentsLoaderImpl(
-                configFileValidator,
-                jsonToRawInputConverter,
+        CommandLineArgumentsReaderImpl commandLineArgumentsLoader = new CommandLineArgumentsReaderImpl(
+                jsonConfigValidator,
+                jsonReader,
                 rawInputParser
         );
 
-        int exitCode = new Cli(processLayer, defaultConfigLoader, commandLineArgumentsLoader).run(args);
+        int exitCode = new Cli(processLayer, defaultConfigFileReader, commandLineArgumentsLoader, rawInputParser).run(args);
         System.exit(exitCode);
     }
 }

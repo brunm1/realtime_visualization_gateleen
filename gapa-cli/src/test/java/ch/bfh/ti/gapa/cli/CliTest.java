@@ -1,7 +1,8 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.loader.CommandLineArgumentsLoader;
-import ch.bfh.ti.gapa.cli.loader.DefaultConfigLoader;
+import ch.bfh.ti.gapa.cli.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.reading.commandline.CommandLineArgumentsReader;
+import ch.bfh.ti.gapa.cli.reading.file.DefaultConfigFileReader;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
@@ -14,8 +15,9 @@ If test fails, fix it and correct also documentation
 class CliTest {
     private static ByteArrayOutputStream byteArrayOutputStream;
     private ProcessLayer processLayerMock = input -> null;
-    private DefaultConfigLoader defaultConfigLoader = input -> {};
-    private CommandLineArgumentsLoader commandLineArgumentsLoader = (input, commandLine) -> {};
+    private DefaultConfigFileReader defaultConfigFileReader = input -> {};
+    private CommandLineArgumentsReader commandLineArgumentsReader = (input, commandLine) -> {};
+    private RawInputParser rawInputParser = (rawInput, input) -> {};
 
     @BeforeAll
     static void beforeAll() {
@@ -42,7 +44,7 @@ class CliTest {
         //TODO
     void testHelpOutput() throws IOException {
         //Run with
-        int exitCode = new Cli(processLayerMock,defaultConfigLoader,commandLineArgumentsLoader).run(new String[]{"-h"});
+        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"-h"});
 
         String helpOutput = ResourceReader.readStringFromResource("/expectedHelpOutput.txt");
         Assertions.assertEquals(helpOutput, byteArrayOutputStream.toString());
@@ -54,7 +56,7 @@ class CliTest {
         ProcessLayer processLayerMock = input -> "plantuml";
 
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigLoader, commandLineArgumentsLoader).run(new String[]{});
+        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{});
 
         Assertions.assertEquals("plantuml", byteArrayOutputStream.toString());
         Assertions.assertEquals(0, exitCode);
@@ -63,7 +65,7 @@ class CliTest {
     @Test
     void testINVALID_COMMAND_USAGE() {
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigLoader, commandLineArgumentsLoader).run(new String[]{"--invalid"});
+        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"--invalid"});
 
         Assertions.assertEquals("Invalid command usage. Cause: Unrecognized option: --invalid\n",
                 byteArrayOutputStream.toString());
@@ -73,7 +75,7 @@ class CliTest {
     @Test
     void testUNRECOGNIZED_ARGUMENTS() {
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigLoader, commandLineArgumentsLoader).run(new String[]{"what", "is", "this", "-f", "sdofje"});
+        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"what", "is", "this", "-f", "sdofje"});
 
         Assertions.assertEquals("Could not recognize some arguments. Cause: what, is, this\n",
                 byteArrayOutputStream.toString());
@@ -87,7 +89,7 @@ class CliTest {
         System.setIn(byteArrayInputStream);
 
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigLoader, commandLineArgumentsLoader).run(new String[]{
+        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{
                 "-i",
                 "\"(<?date>\\S+) " +
                 "sender=(<?sender\\S+) " +

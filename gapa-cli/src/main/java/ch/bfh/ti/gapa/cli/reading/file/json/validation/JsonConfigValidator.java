@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.json.validation;
+package ch.bfh.ti.gapa.cli.reading.file.json.validation;
 
 import org.json.JSONObject;
 
@@ -7,7 +7,7 @@ import java.io.InputStream;
 /**
  * Validates json config data.
  */
-public interface ConfigFileValidator {
+public interface JsonConfigValidator {
 
     /**
      * Validates JSON data from an InputStream

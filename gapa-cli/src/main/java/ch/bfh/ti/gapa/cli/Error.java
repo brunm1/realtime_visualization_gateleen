@@ -11,7 +11,8 @@ enum Error {
     DEFAULT_CONFIG_PATH_NOT_VALID(8, "The syntax of the default config path is not valid"),
     WEBSOCKET_URI_NOT_VALID(9, "The syntax of the websocket uri is not valid."),
     DEFAULT_CONFIG_LOADING_FAILED(10, "Failed to load the default config."),
-    USER_CONFIG_LOADING_FAILED(11, "Could not load user config");
+    USER_CONFIG_LOADING_FAILED(11, "Could not load user config"),
+    CONFIG_PARSING_FAILED(12, "Could not parse configuration values");
 
     private int code;
     private String desc;
