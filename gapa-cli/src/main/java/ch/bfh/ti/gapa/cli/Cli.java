@@ -68,50 +68,61 @@ public class Cli {
                 if (commandLine.hasOption("h")) {
                     infoPrinter.printHelp();
                     return 0;
+                } else if(commandLine.hasOption("v")) {
+                    try {
+                        infoPrinter.printVersion();
+                        return 0;
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.PRINT_VERSION_FAILED, t);
+                    }
+                } else if(commandLine.hasOption("s")) {
+                    try {
+                        infoPrinter.printConfigSchema();
+                        return 0;
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.PRINT_CONFIG_SCHEMA_FAILED, t);
+                    }
+                } else {
+                    if (commandLine.getArgs().length > 0) {
+                        Exception e = new Exception(commandLine.getArgList()
+                                .stream().collect(Collectors.joining(", ")));
+                        throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
+                    }
+
+                    //The RawInput instance stores all configuration that is read in from the default
+                    //config file, the user given config file and the command line arguments.
+                    RawInput rawInput = new RawInput();
+
+                    try {
+                        defaultConfigFileReader.read(rawInput);
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.DEFAULT_CONFIG_READING_FAILED, t);
+                    }
+
+                    try {
+                        commandLineArgumentsReader.read(rawInput, commandLine);
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
+                    }
+
+                    Input input = new Input();
+                    try {
+                        rawInputParser.parse(rawInput, input);
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
+                    }
+
+                    //TODO additional validation step to avoid nullpointers (websocket has to be present)
+
+                    String plantUmlDiagram;
+                    try {
+                        plantUmlDiagram = processLayer.process(input);
+                    } catch (Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
+                    }
+
+                    System.out.print(plantUmlDiagram);
                 }
-
-                if(commandLine.hasOption("v")) {
-                    infoPrinter.printVersion();
-                    return 0;
-                }
-
-                if (commandLine.getArgs().length > 0) {
-                    Exception e = new Exception(commandLine.getArgList()
-                            .stream().collect(Collectors.joining(", ")));
-                    throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
-                }
-
-                //The RawInput instance stores all configuration that is read in from the default
-                //config file, the user given config file and the command line arguments.
-                RawInput rawInput = new RawInput();
-
-                try {
-                    defaultConfigFileReader.read(rawInput);
-                } catch (Throwable t) {
-                    throw new CommandLineException(CommandLineExceptionType.DEFAULT_CONFIG_READING_FAILED, t);
-                }
-
-                try {
-                    commandLineArgumentsReader.read(rawInput, commandLine);
-                } catch (Throwable t) {
-                    throw new CommandLineException(CommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
-                }
-
-                Input input = new Input();
-                try {
-                    rawInputParser.parse(rawInput, input);
-                } catch (Throwable t) {
-                    throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
-                }
-
-                String plantUmlDiagram;
-                try {
-                    plantUmlDiagram = processLayer.process(input);
-                } catch (Throwable t) {
-                    throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
-                }
-
-                System.out.print(plantUmlDiagram);
             } catch (ParseException e) {
                 throw new CommandLineException(CommandLineExceptionType.INVALID_COMMAND_USAGE, e);
             }

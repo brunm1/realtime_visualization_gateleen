@@ -7,7 +7,7 @@ import ch.bfh.ti.gapa.cli.config.reading.model.RawInputField;
  * Wraps a {@link Throwable} and adds the {@link RawInputField}
  * that could not be parsed.
  */
-class RawInputParseException extends Throwable{
+public class RawInputParseException extends Throwable{
     private RawInputField rawInputField;
     private Throwable reason;
 

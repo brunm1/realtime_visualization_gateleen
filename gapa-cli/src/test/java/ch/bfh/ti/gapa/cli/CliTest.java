@@ -3,6 +3,7 @@ package ch.bfh.ti.gapa.cli;
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
@@ -15,9 +16,19 @@ If test fails, fix it and correct also documentation
 class CliTest {
     private static ByteArrayOutputStream byteArrayOutputStream;
     private ProcessLayer processLayerMock = input -> null;
-    private DefaultConfigFileReader defaultConfigFileReader = input -> {};
-    private CommandLineArgumentsReader commandLineArgumentsReader = (input, commandLine) -> {};
-    private RawInputParser rawInputParser = (rawInput, input) -> {};
+    private DefaultConfigFileReader defaultConfigFileReaderMock = input -> {};
+    private CommandLineArgumentsReader commandLineArgumentsReaderMock = (input, commandLine) -> {};
+    private RawInputParser rawInputParserMock = (rawInput, input) -> {};
+    private CliOptions cliOptions = new CliOptions();
+    private InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
+    private Cli cli = new Cli(
+            processLayerMock,
+            defaultConfigFileReaderMock,
+            commandLineArgumentsReaderMock,
+            rawInputParserMock,
+            infoPrinter,
+            cliOptions
+    );
 
     @BeforeAll
     static void beforeAll() {
@@ -44,7 +55,7 @@ class CliTest {
         //TODO
     void testHelpOutput() throws IOException {
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"-h"});
+        int exitCode = cli.run(new String[]{"-h"});
 
         String helpOutput = ResourceReader.readStringFromResource("/expectedHelpOutput.txt");
         Assertions.assertEquals(helpOutput, byteArrayOutputStream.toString());
@@ -53,10 +64,8 @@ class CliTest {
 
     @Test
     void testNormalExecution() {
-        ProcessLayer processLayerMock = input -> "plantuml";
-
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{});
+        int exitCode = cli.run(new String[]{});
 
         Assertions.assertEquals("plantuml", byteArrayOutputStream.toString());
         Assertions.assertEquals(0, exitCode);
@@ -65,7 +74,7 @@ class CliTest {
     @Test
     void testINVALID_COMMAND_USAGE() {
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"--invalid"});
+        int exitCode = cli.run(new String[]{"--invalid"});
 
         Assertions.assertEquals("Invalid command usage. Cause: Unrecognized option: --invalid\n",
                 byteArrayOutputStream.toString());
@@ -75,7 +84,7 @@ class CliTest {
     @Test
     void testUNRECOGNIZED_ARGUMENTS() {
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{"what", "is", "this", "-f", "sdofje"});
+        int exitCode = cli.run(new String[]{"what", "is", "this", "-f", "sdofje"});
 
         Assertions.assertEquals("Could not recognize some arguments. Cause: what, is, this\n",
                 byteArrayOutputStream.toString());
@@ -89,19 +98,9 @@ class CliTest {
         System.setIn(byteArrayInputStream);
 
         //Run with
-        int exitCode = new Cli(processLayerMock, defaultConfigFileReader, commandLineArgumentsReader, rawInputParser).run(new String[]{
-                "-i",
-                "\"(<?date>\\S+) " +
-                "sender=(<?sender\\S+) " +
-                "(<?method>\\S+) (\\S+) " +
-                "(<?url>\\S+)\"",
-                "-o",
-                "\"(<?date>\\S+) " +
-                "receiver=(<?sender\\S+) " +
-                "(<?method>\\S+) (\\S+) " +
-                "(<?url>\\S+)\"",
-                "-t",
-                "yyyy-MM-dd'T'hh:mm:ss",
+        int exitCode = cli.run(new String[]{
+                "-w",
+                "http://localhost:7012"
         });
 
         Assertions.assertEquals(0, exitCode);

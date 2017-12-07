@@ -6,7 +6,9 @@ public enum CommandLineExceptionType {
     PROCESS_LOGIC_FAILED(7, "Exception raised in process logic."),
     DEFAULT_CONFIG_READING_FAILED(10, "Failed to load the default config."),
     CONFIG_PARSING_FAILED(12, "Could not parse configuration values"),
-    COMMAND_LINE_CONFIG_READING_FAILED(13, "Could not read configuration from command line arguments");
+    COMMAND_LINE_CONFIG_READING_FAILED(13, "Could not read configuration from command line arguments"),
+    PRINT_VERSION_FAILED(14, "Could not print version."),
+    PRINT_CONFIG_SCHEMA_FAILED(15, "Could not print config schema.");
 
     private int code;
     private String desc;
