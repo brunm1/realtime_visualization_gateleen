@@ -11,55 +11,74 @@ import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
 import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.exception.CommandLineException;
+import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
+import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 
 import java.util.stream.Collectors;
 
-import static ch.bfh.ti.gapa.cli.CliOptions.options;
-import static ch.bfh.ti.gapa.cli.InfoPrinter.printHelp;
-import static ch.bfh.ti.gapa.cli.InfoPrinter.printVersion;
-
+/**
+ * Main entry point for the application.
+ * Parses command line arguments, loads configuration data and
+ * passes the configuration to the process layer.
+ */
 public class Cli {
     private ProcessLayer processLayer;
     private DefaultConfigFileReader defaultConfigFileReader;
     private CommandLineArgumentsReader commandLineArgumentsReader;
     private RawInputParser rawInputParser;
+    private InfoPrinter infoPrinter;
+    private CliOptions cliOptions;
 
-    public Cli(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader, CommandLineArgumentsReader commandLineArgumentsReader, RawInputParser rawInputParser) {
+    /**
+     * @param processLayer read config data is passed to the process layer
+     * @param defaultConfigFileReader reads the default config file
+     * @param commandLineArgumentsReader reads configuration from command line arguments
+     * @param rawInputParser parses read config data
+     * @param infoPrinter prints data to stdout
+     * @param cliOptions contains allowed command line options
+     */
+    public Cli(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader,
+               CommandLineArgumentsReader commandLineArgumentsReader,
+               RawInputParser rawInputParser, InfoPrinter infoPrinter,
+               CliOptions cliOptions) {
         this.processLayer = processLayer;
         this.defaultConfigFileReader = defaultConfigFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.rawInputParser = rawInputParser;
+        this.infoPrinter = infoPrinter;
+        this.cliOptions = cliOptions;
     }
 
-    private void printError(CommandLineException e) {
-        System.out.println(e.getExceptionType().getDesc() + " Cause: " + e.getThrowable().getMessage());
-    }
-
-    int run(String[] args) {
+    /**
+     * Runs the logic on the given arguments.
+     * @param args command line arguments
+     * @return exit code
+     */
+    public int run(String[] args) {
         try {
             try {
                 DefaultParser defaultParser = new DefaultParser();
-                CommandLine commandLine = defaultParser.parse(options, args);
+                CommandLine commandLine = defaultParser.parse(cliOptions, args);
 
                 if (commandLine.hasOption("h")) {
-                    printHelp();
+                    infoPrinter.printHelp();
                     return 0;
                 }
 
                 if(commandLine.hasOption("v")) {
-                    printVersion();
+                    infoPrinter.printVersion();
                     return 0;
                 }
 
                 if (commandLine.getArgs().length > 0) {
-                    Exception e = new Exception(commandLine.getArgList().stream().collect(Collectors.joining(", ")));
-                    throw new CommandLineException(ExceptionType.UNRECOGNIZED_ARGUMENTS, e);
+                    Exception e = new Exception(commandLine.getArgList()
+                            .stream().collect(Collectors.joining(", ")));
+                    throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
                 }
 
                 //The RawInput instance stores all configuration that is read in from the default
@@ -69,56 +88,74 @@ public class Cli {
                 try {
                     defaultConfigFileReader.read(rawInput);
                 } catch (Throwable t) {
-                    throw new CommandLineException(ExceptionType.DEFAULT_CONFIG_LOADING_FAILED, t);
+                    throw new CommandLineException(CommandLineExceptionType.DEFAULT_CONFIG_READING_FAILED, t);
                 }
 
                 try {
                     commandLineArgumentsReader.read(rawInput, commandLine);
                 } catch (Throwable t) {
-                    throw new CommandLineException(ExceptionType.USER_CONFIG_LOADING_FAILED, t);
+                    throw new CommandLineException(CommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
                 }
 
                 Input input = new Input();
                 try {
                     rawInputParser.parse(rawInput, input);
                 } catch (Throwable t) {
-                    throw new CommandLineException(ExceptionType.CONFIG_PARSING_FAILED, t);
+                    throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
                 }
 
                 String plantUmlDiagram;
                 try {
                     plantUmlDiagram = processLayer.process(input);
                 } catch (Throwable t) {
-                    throw new CommandLineException(ExceptionType.PROCESS_LOGIC_FAILED, t);
+                    throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
                 }
 
                 System.out.print(plantUmlDiagram);
             } catch (ParseException e) {
-                throw new CommandLineException(ExceptionType.INVALID_COMMAND_USAGE, e);
+                throw new CommandLineException(CommandLineExceptionType.INVALID_COMMAND_USAGE, e);
             }
         } catch (CommandLineException e) {
-            //Print error message and exit with error code.
-            printError(e);
-            return e.getExceptionType().getCode();
+            //Print exception message and return exit code.
+            infoPrinter.printCommandLineException(e);
+            return e.getCommandLineExceptionType().getCode();
         }
         return 0;
     }
 
+    /**
+     * Creates object instances for the CLI dependencies, passes them to the CLI,
+     * runs the CLI with the given arguments and exits the application with an exit code.
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
         ProcessLayer processLayer = new ProcessLayerImpl();
         JsonConfigValidator jsonConfigValidator = new JsonConfigValidatorImpl();
         JsonReader jsonReader = new JsonReaderImpl();
         RawInputParser rawInputParser = new RawInputParserImpl();
+
         DefaultConfigFileReader defaultConfigFileReader = new DefaultConfigFileReaderImpl(
                 jsonConfigValidator, jsonReader
         );
-        CommandLineArgumentsReaderImpl commandLineArgumentsLoader = new CommandLineArgumentsReaderImpl(
+
+        CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl(
                 jsonConfigValidator,
-                jsonReader,
-                rawInputParser
+                jsonReader
         );
 
-        int exitCode = new Cli(processLayer, defaultConfigFileReader, commandLineArgumentsLoader, rawInputParser).run(args);
+        CliOptions cliOptions = new CliOptions();
+
+        InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
+
+        int exitCode = new Cli(
+                processLayer,
+                defaultConfigFileReader,
+                commandLineArgumentsReader,
+                rawInputParser,
+                infoPrinter,
+                cliOptions
+        ).run(args);
+
         System.exit(exitCode);
     }
 }

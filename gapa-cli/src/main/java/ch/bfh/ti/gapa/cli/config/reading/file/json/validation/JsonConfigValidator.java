@@ -5,13 +5,14 @@ import org.json.JSONObject;
 import java.io.InputStream;
 
 /**
- * Validates json config data.
+ * Validates JSON config data.
  */
+@FunctionalInterface
 public interface JsonConfigValidator {
 
     /**
-     * Validates JSON data from an InputStream
-     * and returns a JSONObject if the data
+     * Validates JSON data from an {@link InputStream}
+     * and returns a {@link JSONObject} if the data
      * was valid.
      */
     JSONObject validate(InputStream inputStream);

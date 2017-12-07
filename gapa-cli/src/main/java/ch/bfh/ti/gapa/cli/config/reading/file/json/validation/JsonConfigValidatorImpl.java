@@ -31,13 +31,13 @@ public class JsonConfigValidatorImpl implements JsonConfigValidator {
         try {
             return new JSONObject(new JSONTokener(jsonInputStream));
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Could not RawInputParserImpl config file content into json object.", e);
+            throw new IllegalArgumentException("Could not convert config file content into json object.", e);
         }
     }
 
     /**
      * Uses the schema to validate the data and returns a
-     * JSONObject if the validation was successful.
+     * {@link JSONObject} if the validation was successful.
      * @param jsonInputStream input stream containing json data
      * @return a valid json object if json data was valid
      * @throws IllegalArgumentException if the data was not valid
