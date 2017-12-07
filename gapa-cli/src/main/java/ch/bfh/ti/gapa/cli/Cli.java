@@ -84,7 +84,7 @@ public class Cli {
                     }
                 } else {
                     if (commandLine.getArgs().length > 0) {
-                        Exception e = new Exception(commandLine.getArgList()
+                        Exception e = new Exception("Unrecognized arguments: " + commandLine.getArgList()
                                 .stream().collect(Collectors.joining(", ")));
                         throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
                     }
