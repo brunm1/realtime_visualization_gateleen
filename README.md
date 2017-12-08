@@ -11,7 +11,7 @@ It parses logs and outputs plantuml.
 4. Run application with command below (assuming an compatible gateleen instance is running on port 7012)
 
 ```bash
-    java -jar gapa-cli-1.1.jar -w ws://localhost:7012
+    java -jar gapa.jar -w ws://localhost:7012
 ```
 
 5. The output will be a plantuml diagram (in text format). 
@@ -23,7 +23,7 @@ See readme of submodule gapa-cli
 
 ## Known issues
 
-HTTP Method is not shown in plantuml.
+For release 1.2 are no issues known.
 
 ## Modules
 
@@ -37,5 +37,6 @@ HTTP Method is not shown in plantuml.
 | process | Logic for parsing and filtering of communication data and generating the output as sequence diagrams. |
 | test | End to end test for gapa. |
 | web | Currently not used |
-/ integration / Used to connect gapa with a gateleen instance /
+| integration | Used to connect gapa with a gateleen instance |
+
 
