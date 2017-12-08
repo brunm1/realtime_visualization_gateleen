@@ -3,7 +3,7 @@
     <parent>
         <artifactId>gapa</artifactId>
         <groupId>ch.bfh.ti.gapa</groupId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
