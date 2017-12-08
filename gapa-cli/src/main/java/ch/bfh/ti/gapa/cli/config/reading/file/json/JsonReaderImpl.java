@@ -15,7 +15,7 @@ public class JsonReaderImpl implements JsonReader {
      * The filters are optional and are read as {@link org.json.JSONArray}.
      */
     public void read(RawInput rawInput, JSONObject jsonObject) {
-        rawInput.setWebsocketUri(jsonObject.getString(ConfigJsonField.websocketUri.name()));
+        rawInput.setWebsocketUri(jsonObject.optString(ConfigJsonField.websocketUri.name()));
         rawInput.setFilters(jsonObject.optJSONArray(ConfigJsonField.filters.name()));
     }
 }

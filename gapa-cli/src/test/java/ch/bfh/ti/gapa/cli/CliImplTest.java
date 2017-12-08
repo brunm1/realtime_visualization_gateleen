@@ -5,6 +5,7 @@ import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
+import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
@@ -14,22 +15,33 @@ import java.io.*;
 /**
 If test fails, fix it and correct also documentation
  */
-class CliTest {
+class CliImplTest {
     private static ByteArrayOutputStream stdoutByteArrayOutputStream;
     private static ByteArrayOutputStream stderrByteArrayOutputStream;
-    private ProcessLayer processLayerMock = input -> "";
+    private ProcessLayer processLayerMock = new ProcessLayer() {
+        @Override
+        public void startRecording(Input input) {
+        }
+
+        @Override
+        public String stopRecording() {
+            return "";
+        }
+    };
     private DefaultConfigFileReader defaultConfigFileReaderMock = input -> {};
     private CommandLineArgumentsReader commandLineArgumentsReaderMock = (input, commandLine) -> {};
     private RawInputParser rawInputParserMock = (rawInput, input) -> {};
     private CliOptions cliOptions = new CliOptions();
     private InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
-    private Cli cli = new Cli(
+    private InputSupplier inputSupplier = () -> "";
+    private CliImpl cliImpl = new CliImpl(
             processLayerMock,
             defaultConfigFileReaderMock,
             commandLineArgumentsReaderMock,
             rawInputParserMock,
             infoPrinter,
-            cliOptions
+            cliOptions,
+            inputSupplier
     );
 
     @BeforeAll
@@ -57,7 +69,7 @@ class CliTest {
     @Test
     void testHelpOutput() throws IOException {
         //Run with
-        int exitCode = cli.run(new String[]{"-h"});
+        int exitCode = cliImpl.run(new String[]{"-h"});
 
         String helpOutput = ResourceReader.readStringFromResource("/expectedHelpOutput.txt");
         Assertions.assertEquals(helpOutput, stdoutByteArrayOutputStream.toString());
@@ -77,16 +89,16 @@ class CliTest {
     @Test
     void testNormalExecution() {
         //Run with
-        int exitCode = cli.run(new String[]{});
+        int exitCode = cliImpl.run(new String[]{});
 
-        Assertions.assertEquals("", stdoutByteArrayOutputStream.toString());
+        Assertions.assertEquals("\n", stdoutByteArrayOutputStream.toString());
         Assertions.assertEquals(0, exitCode);
     }
 
     @Test
     void testINVALID_COMMAND_USAGE() {
         //Run with
-        int exitCode = cli.run(new String[]{"--invalid"});
+        int exitCode = cliImpl.run(new String[]{"--invalid"});
 
         checkException(CommandLineExceptionType.INVALID_COMMAND_USAGE, exitCode,
                 "org.apache.commons.cli.UnrecognizedOptionException: Unrecognized option: --invalid");
@@ -95,7 +107,7 @@ class CliTest {
     @Test
     void testUNRECOGNIZED_ARGUMENTS() {
         //Run with
-        int exitCode = cli.run(new String[]{"what", "is", "this", "-w", "sdofje"});
+        int exitCode = cliImpl.run(new String[]{"what", "is", "this", "-w", "sdofje"});
 
         checkException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, exitCode,
                 "java.lang.Exception: Unrecognized arguments: what, is, this");
@@ -104,7 +116,7 @@ class CliTest {
     @Test
     void testWebsocketOption() {
         //Run with
-        int exitCode = cli.run(new String[]{
+        int exitCode = cliImpl.run(new String[]{
                 "-w",
                 "http://localhost:7012"
         });

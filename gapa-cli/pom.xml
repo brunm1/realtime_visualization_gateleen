@@ -79,7 +79,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>
-                                ch.bfh.ti.gapa.cli.Cli
+                                ch.bfh.ti.gapa.cli.CliImpl
                             </mainClass>
                         </manifest>
                     </archive>
@@ -100,7 +100,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>ch.bfh.ti.gapa.cli.Cli</Main-Class>
+                                        <Main-Class>ch.bfh.ti.gapa.cli.CliImpl</Main-Class>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>

@@ -8,45 +8,25 @@ It parses logs and outputs plantuml.
 If no -f option is given, stdin is used.
 Logs must be in utf8.
 
-    usage: java -jar /path/to/gapa-cli*.jar <options>
-     -f,--file-name <file>                     Path to a file containing logs.
-     -h,--help                                 Shows this help
-     -i,--inbound-request-pattern <pattern>    The regex pattern for inbound
-                                               requests. Must contain regex
-                                               groups: date, method, url,
-                                               sender.
-                                               Default:
-                                               "^(?<date>\d{4}-\d{2}-\d{2}
-                                               \d{2}:\d{2}:\d{2},\d{3})\s+(\S+
-                                               )\s+(\S+)\s+(\S+)\s+(\S+) -
-                                               %(\S+)\s+(?<method>GET|PUT|POST
-                                               |DELETE)\s+(?<url>\S+)\s+s=(?<s
-                                               ender>\w+)"
-     -o,--outbound-request-pattern <pattern>   The regex pattern for outbound
-                                               requests. Must contain regex
-                                               groups: date, method, url,
-                                               receiver.
-                                               Default:
-                                               "^(?<date>\d{4}-\d{2}-\d{2}
-                                               \d{2}:\d{2}:\d{2},\d{3})
-                                               (?<method>GET|PUT|POST|DELETE)
-                                               (?<url>\S+) (?<receiver>\w+)"
-     -t,--time-format <pattern>                The time pattern used for the
-                                               regex group 'date'. The format
-                                               is specified by
-                                               DateTimeFormatter from Java 8
-                                               Standard Library.Locale.GERMANY
-                                               will be used.
-                                               Default: "yyyy-MM-dd
-                                               HH:mm:ss,SSS"
-     -w,--websocket <uri>                      Connect over websocket to this
-                                               URI.
+    Visualizes communication between services.
+    It connects to a communication gateway over websocket,
+    receives communication data, filters it and outputs PlantUml.
+    Filters can be configured with a json config file.
+    
+    usage: java -jar /path/to/gapa.jar <options>
+     -c,--config <path>     Set the path to a user config file.
+     -h,--help              Shows this help
+     -s,--schema            Print json config schema.
+     -v,--version           Print version number.
+     -w,--websocket <uri>   Connect over websocket to this URI.
     
     Possible exit codes:
-    0 - normal termination
-    1 - Could not find file.
-    2 - Could not parse inbound request pattern.
-    3 - Could not parse outbound request pattern.
-    4 - Could not parse date time pattern.
+    0 - Normal termination.
     5 - Invalid command usage.
     6 - Could not recognize some arguments.
+    7 - Exception raised in process logic.
+    10 - Failed to load the default config.
+    12 - Could not parse configuration values.
+    13 - Could not read configuration from command line arguments.
+    14 - Could not print version.
+    15 - Could not print config schema.

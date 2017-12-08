@@ -12,7 +12,6 @@ import ch.bfh.ti.gapa.process.diagram.SequenceDiagramGenerator;
 import ch.bfh.ti.gapa.process.filter.FilterConverter;
 import ch.bfh.ti.gapa.process.recording.GapaMessageRecorder;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -20,24 +19,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ProcessLayerImpl implements ProcessLayer{
+    private Input input;
+    private GapaMessageRecorder gapaMessageRecorder;
+
     @Override
-    public String process(Input input) throws IOException {
-        GapaMessageRecorder gapaMessageRecorder = new GapaMessageRecorder();
-        JsonReceiver jsonReceiver = new JsonToGapaMessageConverter(gapaMessageRecorder);
-        StringReceiver stringReceiver = new GapaMessageJsonValidator(jsonReceiver);
-        Client gapaWebsocketClient =
-                null;
-        gapaWebsocketClient = new GapaWebSocketClient(input.getWebsocketUri(), stringReceiver);
-
-        Client finalGapaWebsocketClient = gapaWebsocketClient;
-        Thread t = new Thread(() -> {
-                finalGapaWebsocketClient.connect();
-        });
-        t.start();
-
-        //wait until user presses a key
-        System.in.read();
-
+    public String stopRecording() {
         //TODO close connection
 
         List<Record> records = gapaMessageRecorder.getGapaMessages().stream().map(gapaMessage -> {
@@ -57,11 +43,33 @@ public class ProcessLayerImpl implements ProcessLayer{
 
 
         //filter
-        List<Predicate<Record>> filters = FilterConverter.convert(input.getFilters());
-        Predicate<Record> theOneFilter=filters.stream().reduce(Predicate::and).orElse(x->true);
-        List<Record> filteredRecords = records.stream().filter(theOneFilter).collect(Collectors.toList());
+        if(input.getFilters() == null) {
+            //TODO use Subset
+            return new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(records);
+        } else {
+            List<Predicate<Record>> filters = FilterConverter.convert(input.getFilters());
+            Predicate<Record> theOneFilter = filters.stream().reduce(Predicate::and).orElse(x -> true);
+            List<Record> filteredRecords = records.stream().filter(theOneFilter).collect(Collectors.toList());
+            //process records and output plantUml diagram
+            return new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(filteredRecords);
+        }
+    }
 
-        //process records and output plantUml diagram
-        return new SequenceDiagramGenerator().generatePlantUmlSequenceDiagramFromRecords(filteredRecords);
+    @Override
+    public void startRecording(Input input){
+        this.input = input;
+        this.gapaMessageRecorder = new GapaMessageRecorder();
+        JsonReceiver jsonReceiver = new JsonToGapaMessageConverter(gapaMessageRecorder);
+        StringReceiver stringReceiver = new GapaMessageJsonValidator(jsonReceiver);
+        Client gapaWebsocketClient = new GapaWebSocketClient(input.getWebsocketUri(), stringReceiver);
+
+        Client finalGapaWebsocketClient = gapaWebsocketClient;
+        Thread t = new Thread(() -> {
+            finalGapaWebsocketClient.connect();
+            //TODO BindException Address already in use handeln
+        });
+        t.start();
+
+
     }
 }

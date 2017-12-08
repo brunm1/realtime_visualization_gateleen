@@ -33,7 +33,7 @@ public class SequenceDiagramMessage {
 
     public static SequenceDiagramMessage createFromRecord(Record record) {
         SequenceDiagramMessage sequenceDiagramMessage = new SequenceDiagramMessage();
-        sequenceDiagramMessage.setLabel(record.getUrl());
+        sequenceDiagramMessage.setLabel(record.getHttpMethod() + " " + record.getUrl());
         sequenceDiagramMessage.setTo(record.getRecipient());
         sequenceDiagramMessage.setFrom(record.getSender());
         return sequenceDiagramMessage;

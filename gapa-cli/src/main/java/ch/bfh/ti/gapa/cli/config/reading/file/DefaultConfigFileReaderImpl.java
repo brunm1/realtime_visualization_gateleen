@@ -1,6 +1,6 @@
 package ch.bfh.ti.gapa.cli.config.reading.file;
 
-import ch.bfh.ti.gapa.cli.Cli;
+import ch.bfh.ti.gapa.cli.CliImpl;
 import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
@@ -34,7 +34,7 @@ public class DefaultConfigFileReaderImpl extends ConfigFileReader implements Def
     }
 
     private static Path getPathToExecutedJar() throws URISyntaxException {
-        return Paths.get(Cli.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        return Paths.get(CliImpl.class.getProtectionDomain().getCodeSource().getLocation().toURI());
     }
 
     /**

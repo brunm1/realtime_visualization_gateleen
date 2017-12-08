@@ -7,6 +7,10 @@ Generates a sequence diagram (in PlantUML syntax) from recorded data.
 ## filter
 Controls which records are used to generate the diagram. Eg. status information, pings, etc. could be ignored to keep the diagram readable.
 
+The filters are defined as JSONObjects. The attribute "type" is required and defines what kind of filter it is. The other attributes are specified by the schema of the type.
+
+The schemas are located in src/main/resources. Examples of each test type (which are also used for the unit tests) are in src/test/resources. 
+
 ## interfaces
 
 ## reader

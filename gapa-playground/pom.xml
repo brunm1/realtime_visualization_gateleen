@@ -20,5 +20,15 @@
             <artifactId>gapa-integration</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ch.bfh.ti.gapa</groupId>
+            <artifactId>gapa-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>3.3.3</version>
+        </dependency>
     </dependencies>
 </project>
