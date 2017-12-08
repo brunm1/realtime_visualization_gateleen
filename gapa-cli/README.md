@@ -3,11 +3,6 @@
 ## Command line usage:
 Use the -h option to print the following help message:
 
-Visualization of communication between services powered by Gateleen.
-It parses logs and outputs plantuml.
-If no -f option is given, stdin is used.
-Logs must be in utf8.
-
     Visualizes communication between services.
     It connects to a communication gateway over websocket,
     receives communication data, filters it and outputs PlantUml.
