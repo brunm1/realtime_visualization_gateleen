@@ -4,6 +4,7 @@ import org.json.JSONArray;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,17 @@ public class Input {
     private InputStream inputStream;
     private URI websocketUri;
     private JSONArray filters;
+
+    /**
+     * Sets input defaults
+     */
+    public Input(){
+        try {
+            websocketUri = new URI("http://localhost:7012");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Pattern getInboundRequestPattern() {
         return inboundRequestPattern;

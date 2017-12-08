@@ -3,6 +3,7 @@ package ch.bfh.ti.gapa.cli;
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
@@ -14,8 +15,9 @@ import java.io.*;
 If test fails, fix it and correct also documentation
  */
 class CliTest {
-    private static ByteArrayOutputStream byteArrayOutputStream;
-    private ProcessLayer processLayerMock = input -> null;
+    private static ByteArrayOutputStream stdoutByteArrayOutputStream;
+    private static ByteArrayOutputStream stderrByteArrayOutputStream;
+    private ProcessLayer processLayerMock = input -> "";
     private DefaultConfigFileReader defaultConfigFileReaderMock = input -> {};
     private CommandLineArgumentsReader commandLineArgumentsReaderMock = (input, commandLine) -> {};
     private RawInputParser rawInputParserMock = (rawInput, input) -> {};
@@ -33,33 +35,43 @@ class CliTest {
     @BeforeAll
     static void beforeAll() {
         //mock output stream
-        byteArrayOutputStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(byteArrayOutputStream);
-        System.setOut(printStream);
+        stdoutByteArrayOutputStream = new ByteArrayOutputStream();
+        stderrByteArrayOutputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(stdoutByteArrayOutputStream));
+        System.setErr(new PrintStream(stderrByteArrayOutputStream));
     }
 
     @BeforeEach
     void beforeEach() {
-        byteArrayOutputStream.reset();
+        stdoutByteArrayOutputStream.reset();
+        stderrByteArrayOutputStream.reset();
     }
 
     @AfterAll
     static void afterAll() {
         //Restore stdout and stdin
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-        System.setIn(new FileInputStream(FileDescriptor.in));
+        System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
     }
 
     @Test
-    @Disabled
-        //TODO
     void testHelpOutput() throws IOException {
         //Run with
         int exitCode = cli.run(new String[]{"-h"});
 
         String helpOutput = ResourceReader.readStringFromResource("/expectedHelpOutput.txt");
-        Assertions.assertEquals(helpOutput, byteArrayOutputStream.toString());
+        Assertions.assertEquals(helpOutput, stdoutByteArrayOutputStream.toString());
         Assertions.assertEquals(0, exitCode);
+    }
+
+    private void checkException(CommandLineExceptionType commandLineExceptionType, int actualExitCode, String firstLineStackTrace) {
+        String[] lines = stderrByteArrayOutputStream.toString().split("\n");
+        String firstTwoLines = lines[0] + "\n" + lines[1];
+
+        Assertions.assertEquals(commandLineExceptionType.getDesc()+"\n" +
+                        firstLineStackTrace,
+                firstTwoLines);
+        Assertions.assertEquals(commandLineExceptionType.getCode(), actualExitCode);
     }
 
     @Test
@@ -67,7 +79,7 @@ class CliTest {
         //Run with
         int exitCode = cli.run(new String[]{});
 
-        Assertions.assertEquals("plantuml", byteArrayOutputStream.toString());
+        Assertions.assertEquals("", stdoutByteArrayOutputStream.toString());
         Assertions.assertEquals(0, exitCode);
     }
 
@@ -76,27 +88,21 @@ class CliTest {
         //Run with
         int exitCode = cli.run(new String[]{"--invalid"});
 
-        Assertions.assertEquals("Invalid command usage. Cause: Unrecognized option: --invalid\n",
-                byteArrayOutputStream.toString());
-        Assertions.assertEquals(5, exitCode);
+        checkException(CommandLineExceptionType.INVALID_COMMAND_USAGE, exitCode,
+                "org.apache.commons.cli.UnrecognizedOptionException: Unrecognized option: --invalid");
     }
 
     @Test
     void testUNRECOGNIZED_ARGUMENTS() {
         //Run with
-        int exitCode = cli.run(new String[]{"what", "is", "this", "-f", "sdofje"});
+        int exitCode = cli.run(new String[]{"what", "is", "this", "-w", "sdofje"});
 
-        Assertions.assertEquals("Could not recognize some arguments. Cause: what, is, this\n",
-                byteArrayOutputStream.toString());
-        Assertions.assertEquals(6, exitCode);
+        checkException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, exitCode,
+                "java.lang.Exception: Unrecognized arguments: what, is, this");
     }
 
     @Test
-    void testMostOptions() {
-        //mock input stream
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(new byte[]{});
-        System.setIn(byteArrayInputStream);
-
+    void testWebsocketOption() {
         //Run with
         int exitCode = cli.run(new String[]{
                 "-w",
