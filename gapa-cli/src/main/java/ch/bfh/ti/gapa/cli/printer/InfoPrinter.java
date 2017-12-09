@@ -50,6 +50,7 @@ public class InfoPrinter {
 
     /**
      * Prints out the version of the application.
+     * @throws IOException if version could not be read.
      */
     public void printVersion() throws IOException {
         System.out.println("Gapa - " + readVersion());

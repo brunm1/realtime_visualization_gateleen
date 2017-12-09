@@ -43,6 +43,7 @@ public class CliImpl implements Cli{
      * @param rawInputParser parses read config data
      * @param infoPrinter prints data to stdout
      * @param cliOptions contains allowed command line options
+     * @param inputSupplier used to request input from the user
      */
     public CliImpl(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
