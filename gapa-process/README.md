@@ -11,6 +11,29 @@ The filters are defined as JSONObjects. The attribute "type" is required and def
 
 The schemas are located in src/main/resources. Examples of each test type (which are also used for the unit tests) are in src/test/resources. 
 
+The attribute `type` is mandatory and has to be the name of one of the Filter-Types (as CamelCase, starting with a lowercase letter, unlike the ClassNames)
+### GenericRegexFilter
+Returns true if a given regex pattern matches the selected attribute of a record.
+
+#### Parameters
+* attribute: the name of the attribute that is checked
+* pattern: a regex pattern
+
+#### Example
+``` 
+{
+  "type": "genericRegexFilter",
+  "name": "myFirstRegexFilter",
+  "attribute": "url",
+  "pattern": "/gateleen/server/.*"
+}
+```
+### TimeFilter
+
+### AndFilter
+
+### OrFilter
+
 ## interfaces
 
 ## reader
