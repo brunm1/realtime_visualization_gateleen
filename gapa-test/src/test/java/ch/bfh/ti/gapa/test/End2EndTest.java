@@ -1,3 +1,5 @@
+package ch.bfh.ti.gapa.test;
+
 import ch.bfh.ti.gapa.process.diagram.SequenceDiagramGenerator;
 import ch.bfh.ti.gapa.process.reader.StreamRedirection;
 import ch.bfh.ti.gapa.process.reader.StringFromInputStreamReader;
