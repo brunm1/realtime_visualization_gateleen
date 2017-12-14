@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.bfh.ti.gapa</groupId>
@@ -20,8 +21,8 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:brunm1/visualization_gateleen.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <distributionManagement>
         <site>
@@ -41,7 +42,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit.jupiter.version}</version>
+                <version>${junit-jupiter-api.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -49,33 +50,67 @@
                 <artifactId>json</artifactId>
                 <version>${json.version}</version>
             </dependency>
+            <dependency>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>${commons-cli.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.java-websocket</groupId>
+                <artifactId>Java-WebSocket</artifactId>
+                <version>${Java-WebSocket.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.everit-org.json-schema</groupId>
+                <artifactId>org.everit.json.schema</artifactId>
+                <version>${org.everit.json.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>${vertx-core.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.1</version>
+                        <version>${junit-platform-surefire-provider.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.0.1</version>
+                        <version>${junit-jupiter-engine.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -83,13 +118,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>${maven-release-plugin.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>${jacoco-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -107,17 +142,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven-checkstyle-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.8</version>
+                <version>${maven-pmd-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
+                <version>${maven-project-info-reports-plugin.version}</version>
                 <configuration>
                     <!-- avoids a warning that some repo cannot be found -->
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -148,7 +183,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>${jacoco-maven-plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -160,7 +195,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>${maven-surefire-report-plugin.version}</version>
                 <configuration>
                     <aggregate>true</aggregate>
                 </configuration>
@@ -168,7 +203,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${maven-javadoc-plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <id>test-html</id>
@@ -207,7 +242,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
+                <version>${maven-jxr-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
@@ -221,16 +256,37 @@
     </repositories>
 
     <properties>
-        <junit.jupiter.version>5.0.1</junit.jupiter.version>
-        <plantuml.version>1.2017.12</plantuml.version>
-        <json.version>20171018</json.version>
-        <org.apache.maven.plugins.maven-shade-plugin.version>3.0.0</org.apache.maven.plugins.maven-shade-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- The site directory has to be absolute and has to stay the same. Variables like ${project.basedir}
         cannot be used, because it seems as it references the directory of the current
         module in the process which may be the parent module or any child module. ${user.dir} points
-        to the directory where maven is executed in. -->
+        to the directory where maven is executed in.
+        site.directory can be overwritten with command line argument -Dsite.directory=<path> -->
         <site.directory>${user.dir}/target/gapa-site/</site.directory>
+
+        <!--versions-->
+        <plantuml.version>1.2017.12</plantuml.version>
+        <json.version>20171018</json.version>
+        <java.version>1.8</java.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>2.19</maven-surefire-plugin.version>
+        <junit-platform-surefire-provider.version>1.0.1</junit-platform-surefire-provider.version>
+        <junit-jupiter-engine.version>5.0.1</junit-jupiter-engine.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
+        <maven-surefire-report-plugin.version>2.20.1</maven-surefire-report-plugin.version>
+        <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
+        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+        <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
+        <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
+        <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+        <junit-jupiter-api.version>5.0.1</junit-jupiter-api.version>
+        <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <Java-WebSocket.version>1.3.6</Java-WebSocket.version>
+        <org.everit.json.schema.version>1.6.1</org.everit.json.schema.version>
+        <vertx-core.version>3.3.3</vertx-core.version>
     </properties>
 </project>
