@@ -19,7 +19,7 @@
     </modules>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:brunm1/realtime_visualization_gateleen.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:brunm1/visualization_gateleen.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
 
@@ -27,7 +27,7 @@
         <site>
             <id>gapa</id>
             <name>Gapa</name>
-            <url>https://brunm1.github.io/gapa/site</url>
+            <url>file://${site.directory}</url>
         </site>
     </distributionManagement>
 
@@ -106,6 +106,50 @@
                     <aggregate>true</aggregate>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <reportSets>
+                    <reportSet>
+                        <id>test-html</id>
+                        <configuration>
+                            <show>package</show>
+                        </configuration>
+                        <reports>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>test-aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <show>package</show>
+                        </configuration>
+                        <reports>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>html</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
         </plugins>
     </reporting>
 
@@ -123,5 +167,11 @@
         <json.version>20171018</json.version>
         <org.apache.maven.plugins.maven-shade-plugin.version>3.0.0</org.apache.maven.plugins.maven-shade-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- The site directory has to be absolute and has to stay the same. Variables like ${project.basedir}
+        cannot be used, because it seems as it references the directory of the current
+        module in the process which may be the parent module or any child module. ${user.dir} points
+        to the directory where maven is executed in. -->
+        <site.directory>${user.dir}/target/gapa-site/</site.directory>
     </properties>
 </project>
