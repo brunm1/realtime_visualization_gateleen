@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gapa-process</artifactId>
+    <name>gapa-process</name>
 
     <dependencies>
         <dependency>

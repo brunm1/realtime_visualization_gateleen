@@ -9,6 +9,7 @@
 
     <artifactId>gapa-cli</artifactId>
     <packaging>jar</packaging>
+    <name>gapa-cli</name>
 
     <dependencies>
         <dependency>
@@ -73,6 +74,7 @@
                 configuration in the manifest of the gapa-cli jar -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>

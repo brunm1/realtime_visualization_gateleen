@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gapa-integration</artifactId>
+    <name>gapa-integration</name>
 
     <dependencies>
         <!-- websocket client library -->
@@ -30,14 +31,6 @@
             <version>20171018</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <!-- Used for org.everit.json.schema -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
