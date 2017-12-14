@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.domain.recording;
+package ch.bfh.ti.gapa.process.recording;
 
 import ch.bfh.ti.gapa.process.recording.ListenerHooks;
 import org.junit.jupiter.api.Test;
