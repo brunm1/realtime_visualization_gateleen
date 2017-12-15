@@ -5,8 +5,12 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GapaWebSocketClient extends WebSocketClient implements Client {
+    private static final Logger LOGGER = Logger.getLogger(GapaWebSocketClient.class.getName());
+
     private StringReceiver stringReceiver;
 
     public GapaWebSocketClient(URI serverUri, StringReceiver stringReceiver) {
@@ -16,7 +20,7 @@ public class GapaWebSocketClient extends WebSocketClient implements Client {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        System.out.println("Opened connection");
+        LOGGER.info("Opened connection");
     }
 
     @Override
@@ -26,13 +30,12 @@ public class GapaWebSocketClient extends WebSocketClient implements Client {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        // The codecodes are documented in class org.java_websocket.framing.CloseFrame
-        System.out.println( "Connection closed by " + ( remote ? "remote peer" : "us" ) + " Code: " + code + " Reason: " + reason );
+        // The codes are documented in class org.java_websocket.framing.CloseFrame
+        LOGGER.severe("Connection closed by " + ( remote ? "remote peer" : "us" ) + " Code: " + code + " Reason: " + reason );
     }
 
     @Override
     public void onError(Exception ex) {
-        ex.printStackTrace();
-        // if the error is fatal then onClose will be called additionally
+        LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
     }
 }
