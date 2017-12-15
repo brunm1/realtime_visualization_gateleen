@@ -101,6 +101,11 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>${maven-surefire-report-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -196,10 +201,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${maven-surefire-report-plugin.version}</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>report-aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>report</id>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
