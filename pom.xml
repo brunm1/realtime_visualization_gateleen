@@ -9,11 +9,9 @@
     <version>1.3-SNAPSHOT</version>
     <modules>
         <module>gapa-config</module>
-        <module>gapa-database</module>
         <module>gapa-domain</module>
         <module>gapa-process</module>
         <module>gapa-cli</module>
-        <module>gapa-web</module>
         <module>gapa-playground</module>
         <module>gapa-test</module>
         <module>gapa-integration</module>
