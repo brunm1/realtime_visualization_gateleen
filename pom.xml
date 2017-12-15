@@ -21,6 +21,9 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!--used for link in top right corner of site-->
+    <url>https://brunm1.github.io/gapa/${project.version}</url>
+
     <distributionManagement>
         <site>
             <id>gapa</id>
