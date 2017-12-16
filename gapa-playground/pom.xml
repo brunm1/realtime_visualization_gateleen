@@ -11,6 +11,10 @@
     <artifactId>gapa-playground</artifactId>
     <name>gapa-playground</name>
 
+    <description>
+        Contains experiments or tools to play around. Only for development (won't be published with application).
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>ch.bfh.ti.gapa</groupId>

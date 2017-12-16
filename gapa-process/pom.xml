@@ -10,6 +10,10 @@
     <artifactId>gapa-process</artifactId>
     <name>gapa-process</name>
 
+    <description>
+        Contains the process logic of the project. Converts gapa messages into plantuml.
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.plantuml</groupId>

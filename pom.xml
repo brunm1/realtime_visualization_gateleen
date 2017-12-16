@@ -24,6 +24,12 @@
     <!--used for link in top right corner of site-->
     <url>https://brunm1.github.io/gapa/${project.version}</url>
 
+    <description>
+        Gapa is a command line application that connects to a websocket server. The server sends messages to gapa.
+        The messages contain data about HTTP communication between nodes. The data may be filtered
+        and is converted into a sequence diagram in PlantUml format.
+    </description>
+
     <distributionManagement>
         <site>
             <id>gapa</id>

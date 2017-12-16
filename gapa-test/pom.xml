@@ -10,6 +10,11 @@
     <artifactId>gapa-test</artifactId>
     <name>gapa-test</name>
 
+    <description>
+        Contains application tests. They verify if the packaged application fulfills the requirements of
+        the requirements document.
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
