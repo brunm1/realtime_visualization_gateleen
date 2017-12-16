@@ -10,6 +10,7 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.ServerWebSocket;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerClientExample {
-    public static void main(String[] args) {
+
+    @Test
+    public void start() {
 
         //SERVER CODE (GATELEEN)------------------------------------
         //Create Vertx instance

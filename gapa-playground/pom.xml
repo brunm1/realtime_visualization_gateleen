@@ -32,10 +32,15 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
         </dependency>
     </dependencies>
 
-    <!-- disable all default plugins for this module because it is used to try things out.
+    <!-- disable most default plugins for this module because it is used to try things out.
      gapa-playground is irrelevant for building.-->
     <build>
         <plugins>
@@ -99,4 +104,8 @@
             </plugin>
         </plugins>
     </build>
+
+    <properties>
+        <vertx-core.version>3.3.3</vertx-core.version>
+    </properties>
 </project>
