@@ -24,7 +24,7 @@ See readme of submodule [gapa-cli](gapa-cli/README.md)
 
 ## Known issues
 
-For release 1.3-SNAPSHOT are no issues known.
+For version 1.3-SNAPSHOT are no issues known.
 
 ## Modules
 
