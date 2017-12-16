@@ -1,5 +1,5 @@
 # gapa-process
-Contains the process logic of the project. Converts gapa messages into plantuml.
+${gapa-process.description}
 
 ## diagram
 Generates a sequence diagram (in PlantUML syntax) from recorded data.

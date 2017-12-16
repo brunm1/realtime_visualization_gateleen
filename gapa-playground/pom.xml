@@ -11,9 +11,7 @@
     <artifactId>gapa-playground</artifactId>
     <name>gapa-playground</name>
 
-    <description>
-        Contains experiments or tools to play around. Only for development (won't be published with application).
-    </description>
+    <description>${gapa-playground.description}</description>
 
     <dependencies>
         <dependency>

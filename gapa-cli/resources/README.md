@@ -1,5 +1,5 @@
 # gapa-cli
-Provides a command line interface for the user. The application is packaged here.
+${gapa-cli.description}
 
 ## Command line usage:
 Use the -h option to print the following help message:

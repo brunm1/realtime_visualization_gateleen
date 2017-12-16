@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>gapa-cli</name>
 
-    <description>Provides a command line interface for the user. The application is packaged here.</description>
+    <description>${gapa-cli.description}</description>
 
     <dependencies>
         <dependency>

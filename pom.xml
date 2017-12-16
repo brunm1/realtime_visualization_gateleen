@@ -24,11 +24,7 @@
     <!--used for link in top right corner of site-->
     <url>https://brunm1.github.io/gapa/${project.version}</url>
 
-    <description>
-        Gapa is a command line application that connects to a websocket server. The server sends messages to gapa.
-        The messages contain data about HTTP communication between nodes. The data may be filtered
-        and is converted into a sequence diagram in PlantUml format.
-    </description>
+    <description>${gapa.description}</description>
 
     <distributionManagement>
         <site>
@@ -149,6 +145,41 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>README.md</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>README.md</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -323,5 +354,14 @@
         <vertx-core.version>3.3.3</vertx-core.version>
         <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+
+        <!-- descriptions -->
+        <gapa-test.description>Contains application tests. They verify if the packaged application fulfills the requirements of the requirements document.</gapa-test.description>
+        <gapa-process.description>Contains the process logic of the project. Converts gapa messages into plantuml.</gapa-process.description>
+        <gapa-playground.description>Contains experiments or tools to play around. Only for development (won't be published with application).</gapa-playground.description>
+        <gapa-integration.description>Contains the data model used for the communication between gapa and a websocket server. Furthermore, it contains a websocket client for gapa and converters that can be used by the server to prepare messages for gapa.</gapa-integration.description>
+        <gapa-domain.description>Contains data models that can be used in the future to persist data. The data models are currently also used by the process logic.</gapa-domain.description>
+        <gapa-cli.description>Provides a command line interface for the user. The application is packaged here.</gapa-cli.description>
+        <gapa.description>Gapa is a command line application that connects to a websocket server. The server sends messages to gapa. The messages contain data about HTTP communication between nodes. The data may be filtered and is converted into a sequence diagram in PlantUml format.</gapa.description>
     </properties>
 </project>

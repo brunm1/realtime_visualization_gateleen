@@ -10,10 +10,7 @@
     <artifactId>gapa-test</artifactId>
     <name>gapa-test</name>
 
-    <description>
-        Contains application tests. They verify if the packaged application fulfills the requirements of
-        the requirements document.
-    </description>
+    <description>${gapa-test.description}</description>
 
     <dependencies>
         <dependency>
@@ -49,16 +46,6 @@
                 <executions>
                     <execution>
                         <id>default-install</id>
-                        <phase/>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-resources</id>
                         <phase/>
                     </execution>
                 </executions>
