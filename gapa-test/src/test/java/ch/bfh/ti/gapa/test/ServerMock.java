@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 /**
- * This server mock is used for end to end tests. It mocks a server capable of websocket connections.
+ * This server mock is used for application tests. It mocks a server capable of websocket connections.
  * The server redirects received requests to the connected websocket client.
  */
 public class ServerMock {
@@ -64,6 +63,19 @@ public class ServerMock {
         for(GapaMessage gapaMessage: gapaMessages) {
             //converts the message to json which is sent over the wire
             gapaMessageToJsonConverter.sendGapaMessage(gapaMessage);
+        }
+
+        //TODO Output indicator of received messages to stderr so it can be checked in test
+        //Wait until gapa messages are received by client
+        //Testing in an asynchronous environment is difficult.
+        //40ms is an approximation. Gapa has no capabilities to tell
+        //how many messages were already received. We can't output
+        //this information in StdOut because this channel is reserved for
+        //PlantUml output.
+        try {
+            Thread.sleep(40);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
