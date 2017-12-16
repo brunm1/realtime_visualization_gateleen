@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.ServerWebSocket;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,6 +48,22 @@ public class ServerMock {
         //the converter takes a gapa message, converts it to JSON and passes it to the jsonSender
         gapaMessageToJsonConverter = new GapaMessageToJsonConverter(jsonSender);
 
+        //send message about request to Gapa
+        //The name of the service that sent the request is given in the "service" header.
+        httpServer.requestHandler(httpServerRequest -> {
+            LOGGER.info("Server receives request: " + httpServerRequest.toString());
+
+            GapaMessage gapaMessage = new GapaMessage();
+            gapaMessage.setMethod(GapaMessage.Method.valueOf(httpServerRequest.method().name()));
+            gapaMessage.setPeer(httpServerRequest.getHeader("service"));
+            gapaMessage.setType(GapaMessage.Type.inbound);
+            gapaMessage.setPath(httpServerRequest.path());
+            gapaMessage.setTimestamp(Instant.now());
+
+            LOGGER.info("Server sends message about request to gapa: " + gapaMessage.toString());
+            gapaMessageToJsonConverter.sendGapaMessage(gapaMessage);
+        });
+
         //start http server at a short lived port (vertx chooses one itself)
         httpServer.listen(0);
         waitForPort();
@@ -61,6 +78,7 @@ public class ServerMock {
      */
     public void sendGapaMessages(List<GapaMessage> gapaMessages) {
         for(GapaMessage gapaMessage: gapaMessages) {
+            LOGGER.info("Sending predefined gapa message: " + gapaMessage.toString());
             //converts the message to json which is sent over the wire
             gapaMessageToJsonConverter.sendGapaMessage(gapaMessage);
         }
