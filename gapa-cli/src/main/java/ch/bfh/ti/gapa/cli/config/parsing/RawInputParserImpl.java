@@ -35,6 +35,10 @@ public class RawInputParserImpl implements RawInputParser {
             }
         }
 
+        if(rawInput.getServerName() != null) {
+            input.setServerName(rawInput.getServerName());
+        }
+
         if(rawInput.getFilters() != null) {
             //was already validated, no further conversions needed
             //filters are kept dynamic for maximum flexibility

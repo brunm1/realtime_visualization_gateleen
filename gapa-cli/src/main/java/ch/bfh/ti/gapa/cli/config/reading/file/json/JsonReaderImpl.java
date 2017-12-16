@@ -17,5 +17,6 @@ public class JsonReaderImpl implements JsonReader {
     public void read(RawInput rawInput, JSONObject jsonObject) {
         rawInput.setWebsocketUri(jsonObject.optString(ConfigJsonField.websocketUri.name()));
         rawInput.setFilters(jsonObject.optJSONArray(ConfigJsonField.filters.name()));
+        rawInput.setServerName(jsonObject.optString(ConfigJsonField.serverName.name()));
     }
 }

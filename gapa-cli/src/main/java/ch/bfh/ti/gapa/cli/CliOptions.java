@@ -34,6 +34,13 @@ class CliOptions extends Options {
                     .longOpt("websocket")
                     .build();
 
+            Option serverName = Option.builder("n")
+                    .desc("Name of the central server that receives and sends requests.")
+                    .hasArg()
+                    .argName("name")
+                    .longOpt("server-name")
+                    .build();
+
             Option config = Option.builder("c")
                     .desc("Set the path to a user config file.")
                     .hasArg()
@@ -44,5 +51,6 @@ class CliOptions extends Options {
             this.addOption(websocketUri);
             this.addOption(config);
             this.addOptionGroup(printOptionGroup);
+            this.addOption(serverName);
     }
 }

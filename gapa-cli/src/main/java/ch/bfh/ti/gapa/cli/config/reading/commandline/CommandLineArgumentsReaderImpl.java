@@ -51,5 +51,9 @@ public class CommandLineArgumentsReaderImpl implements CommandLineArgumentsReade
         if(commandLine.hasOption("w")) {
             rawInput.setWebsocketUri(commandLine.getOptionValue("w"));
         }
+
+        if(commandLine.hasOption("n")) {
+            rawInput.setServerName(commandLine.getOptionValue("n"));
+        }
     }
 }

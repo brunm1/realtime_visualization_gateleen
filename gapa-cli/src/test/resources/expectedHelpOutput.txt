@@ -4,11 +4,13 @@ receives communication data, filters it and outputs PlantUml.
 Filters can be configured with a json config file.
 
 usage: java -jar /path/to/gapa.jar <options>
- -c,--config <path>     Set the path to a user config file.
- -h,--help              Shows this help
- -s,--schema            Print json config schema.
- -v,--version           Print version number.
- -w,--websocket <uri>   Connect over websocket to this URI.
+ -c,--config <path>        Set the path to a user config file.
+ -h,--help                 Shows this help
+ -n,--server-name <name>   Name of the central server that receives and
+                           sends requests.
+ -s,--schema               Print json config schema.
+ -v,--version              Print version number.
+ -w,--websocket <uri>      Connect over websocket to this URI.
 
 Possible exit codes:
 0 - Normal termination.

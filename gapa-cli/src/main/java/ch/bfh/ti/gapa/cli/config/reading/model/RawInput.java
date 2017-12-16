@@ -11,6 +11,7 @@ import org.json.JSONArray;
 public class RawInput {
     private String websocketUri;
     private JSONArray filters;
+    private String serverName;
 
     public String getWebsocketUri() {
         return websocketUri;
@@ -26,5 +27,13 @@ public class RawInput {
 
     public void setFilters(JSONArray filters) {
         this.filters = filters;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 }

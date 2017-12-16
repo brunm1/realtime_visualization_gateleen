@@ -15,6 +15,7 @@ public class Input {
     private InputStream inputStream;
     private URI websocketUri;
     private JSONArray filters;
+    private String serverName;
 
     /**
      * Sets input defaults
@@ -25,6 +26,7 @@ public class Input {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        serverName = "gateleen";
     }
 
     public Pattern getInboundRequestPattern() {
@@ -73,5 +75,13 @@ public class Input {
 
     public void setFilters(JSONArray filters) {
         this.filters = filters;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 }

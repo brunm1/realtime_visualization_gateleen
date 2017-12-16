@@ -30,10 +30,10 @@ public class ProcessLayerImpl implements ProcessLayer{
             Record record = new Record();
             record.setHttpMethod(gapaMessage.getMethod().name());
             if(gapaMessage.getType() == GapaMessage.Type.inbound) {
-                record.setRecipient("gateleen");
+                record.setRecipient(input.getServerName());
                 record.setSender(gapaMessage.getPeer());
             } else {
-                record.setSender("gateleen");
+                record.setSender(input.getServerName());
                 record.setRecipient(gapaMessage.getPeer());
             }
             record.setTime(LocalDateTime.ofInstant(gapaMessage.getTimestamp(), ZoneOffset.UTC));

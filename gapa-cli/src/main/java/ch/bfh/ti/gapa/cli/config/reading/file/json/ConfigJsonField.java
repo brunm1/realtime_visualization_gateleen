@@ -6,5 +6,6 @@ package ch.bfh.ti.gapa.cli.config.reading.file.json;
  */
 public enum ConfigJsonField {
     websocketUri,
-    filters
+    filters,
+    serverName
 }
