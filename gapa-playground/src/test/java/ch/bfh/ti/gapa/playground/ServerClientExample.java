@@ -1,7 +1,6 @@
 package ch.bfh.ti.gapa.playground;
 
 import ch.bfh.ti.gapa.cli.CliImpl;
-import ch.bfh.ti.gapa.cli.InputSupplier;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
 import ch.bfh.ti.gapa.integration.server.converter.GapaMessageToJsonConverter;
 import ch.bfh.ti.gapa.integration.server.converter.JsonSender;
@@ -12,10 +11,7 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.ServerWebSocket;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerClientExample {
@@ -64,15 +60,16 @@ public class ServerClientExample {
 
             CliImpl cliImpl = new CliImpl();
 
-            InputSupplier inputSupplierMock = () -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return "";
-            };
-            cliImpl.setInputSupplier(inputSupplierMock);
+            //TODO fix?
+//            InputSupplier inputSupplierMock = () -> {
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                return "";
+//            };
+//            cliImpl.setInputSupplier(inputSupplierMock);
 
             System.out.println("Start cliImpl with no arguments");
             int exitCode = cliImpl.run(new String[]{"-w", "http://localhost:7020", "-c", "/home/marc/Documents/visualization_gateleen/gapa-playground/src/main/resources/sample-config.json"});

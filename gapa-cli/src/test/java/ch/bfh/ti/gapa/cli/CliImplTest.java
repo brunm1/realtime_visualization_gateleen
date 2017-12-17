@@ -2,7 +2,8 @@ package ch.bfh.ti.gapa.cli;
 
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
-import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
@@ -14,6 +15,7 @@ import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
+import java.nio.file.Path;
 
 /**
 If test fails, fix it and correct also documentation
@@ -32,7 +34,17 @@ class CliImplTest {
             asyncHandler.onResult("");
         }
     };
-    private DefaultConfigFileReader defaultConfigFileReaderMock = input -> {};
+    private ConfigFileReader configFileReader = new ConfigFileReader() {
+        @Override
+        public void readConfigFile(RawInput rawInput) {
+
+        }
+
+        @Override
+        public void readConfigFile(RawInput rawInput, Path configFilePath) {
+
+        }
+    };
     private CommandLineArgumentsReader commandLineArgumentsReaderMock = (input, commandLine) -> {};
     private RawInputParser rawInputParserMock = (rawInput, input) -> {};
     private CliOptions cliOptions = new CliOptions();
@@ -50,7 +62,7 @@ class CliImplTest {
     };
     private CliImpl cliImpl = new CliImpl(
             processLayerMock,
-            defaultConfigFileReaderMock,
+            configFileReader,
             commandLineArgumentsReaderMock,
             rawInputParserMock,
             infoPrinter,

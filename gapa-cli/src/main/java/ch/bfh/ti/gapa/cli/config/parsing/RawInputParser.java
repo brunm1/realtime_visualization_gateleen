@@ -14,7 +14,7 @@ public interface RawInputParser {
      * Parses data from {@link RawInput} and saves it in {@link Input}
      * @param rawInput Unparsed data collected from different sources
      * @param input Target {@link Input} instance that will hold the parsed data
-     * @throws RawInputParseException when a {@link ch.bfh.ti.gapa.cli.config.reading.model.RawInputField} cannot be parsed
+     * @throws RawInputParseException when a {@link ch.bfh.ti.gapa.cli.config.ConfigField} cannot be parsed
      */
     void parse(RawInput rawInput, Input input) throws RawInputParseException;
 }

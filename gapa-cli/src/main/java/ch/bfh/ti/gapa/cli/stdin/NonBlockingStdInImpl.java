@@ -30,7 +30,7 @@ public class NonBlockingStdInImpl implements NonBlockingStdIn {
                 }
             }
         }).start();
-    };
+    }
 
     public void close() {
        closed=true;

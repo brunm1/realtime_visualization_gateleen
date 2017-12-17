@@ -5,6 +5,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GapaWebSocketClient extends WebSocketClient implements Client {
@@ -26,6 +27,7 @@ public class GapaWebSocketClient extends WebSocketClient implements Client {
 
     @Override
     public void onMessage(String s) {
+        LOGGER.log(Level.FINE, "Received message:\n" + s);
         stringReceiver.receiveString(s);
     }
 

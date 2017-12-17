@@ -1,5 +1,5 @@
 @startuml
-mars -> gateleen : GET /earth/services/moon/status
-uranus -> gateleen : PUT /earth/time/v1/offset/_hooks/listeners/http/stuff-044829350048546734
-uranus -> gateleen : PUT /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03810166830522095
+mars -> gateway : GET /earth/services/moon/status
+uranus -> gateway : PUT /earth/time/v1/offset/_hooks/listeners/http/stuff-044829350048546734
+uranus -> gateway : PUT /earth/user/registration/v1/signon/_hooks/listeners/http/stuff-03810166830522095
 @enduml

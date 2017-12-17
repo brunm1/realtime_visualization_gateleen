@@ -1,5 +1,6 @@
 package ch.bfh.ti.gapa.cli.config.reading.file.json;
 
+import ch.bfh.ti.gapa.cli.config.ConfigField;
 import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import org.json.JSONObject;
 
@@ -8,15 +9,14 @@ import org.json.JSONObject;
  * an {@link RawInput} instance.
  */
 public class JsonReaderImpl implements JsonReader {
-
     /**
      * Creates an instance of {@link RawInput} and copies data from a {@link JSONObject} to this instance.
-     * The websocketUri is read as string.
+     * The websocketUri and serverName are read as string.
      * The filters are optional and are read as {@link org.json.JSONArray}.
      */
     public void read(RawInput rawInput, JSONObject jsonObject) {
-        rawInput.setWebsocketUri(jsonObject.optString(ConfigJsonField.websocketUri.name()));
-        rawInput.setFilters(jsonObject.optJSONArray(ConfigJsonField.filters.name()));
-        rawInput.setServerName(jsonObject.optString(ConfigJsonField.serverName.name()));
+        rawInput.setWebsocketUri(jsonObject.optString(ConfigField.websocketUri.name()));
+        rawInput.setFilters(jsonObject.optJSONArray(ConfigField.filters.name()));
+        rawInput.setServerName(jsonObject.optString(ConfigField.serverName.name()));
     }
 }

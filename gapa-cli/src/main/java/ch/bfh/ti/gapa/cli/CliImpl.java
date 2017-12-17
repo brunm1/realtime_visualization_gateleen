@@ -4,8 +4,8 @@ import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
 import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
-import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
-import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
@@ -24,6 +24,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public class CliImpl implements Cli{
     private static final Logger LOGGER = Logger.getLogger(CliImpl.class.getName());
 
     private ProcessLayer processLayer;
-    private DefaultConfigFileReader defaultConfigFileReader;
+    private ConfigFileReader configFileReader;
     private CommandLineArgumentsReader commandLineArgumentsReader;
     private RawInputParser rawInputParser;
     private InfoPrinter infoPrinter;
@@ -45,19 +47,19 @@ public class CliImpl implements Cli{
 
     /**
      * @param processLayer read config data is passed to the process layer
-     * @param defaultConfigFileReader reads the default config file
+     * @param configFileReader reads the default config file
      * @param commandLineArgumentsReader reads configuration from command line arguments
      * @param rawInputParser parses read config data
      * @param infoPrinter prints data to stdout
      * @param cliOptions contains allowed command line options
      * @param nonBlockingStdIn used to request input from the user
      */
-    public CliImpl(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader,
+    public CliImpl(ProcessLayer processLayer, ConfigFileReader configFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
                    RawInputParser rawInputParser, InfoPrinter infoPrinter,
                    CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn) {
         this.processLayer = processLayer;
-        this.defaultConfigFileReader = defaultConfigFileReader;
+        this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.rawInputParser = rawInputParser;
         this.infoPrinter = infoPrinter;
@@ -74,21 +76,16 @@ public class CliImpl implements Cli{
         JsonReader jsonReader = new JsonReaderImpl();
         RawInputParser rawInputParser = new RawInputParserImpl();
 
-        DefaultConfigFileReader defaultConfigFileReader = new DefaultConfigFileReaderImpl(
-                jsonConfigValidator, jsonReader
-        );
+        ConfigFileReader configFileReader = new ConfigFileReaderImpl(jsonConfigValidator, jsonReader);
 
-        CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl(
-                jsonConfigValidator,
-                jsonReader
-        );
+        CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl();
 
         CliOptions cliOptions = new CliOptions();
 
         InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
 
         this.processLayer = processLayer;
-        this.defaultConfigFileReader = defaultConfigFileReader;
+        this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.rawInputParser = rawInputParser;
         this.infoPrinter = infoPrinter;
@@ -135,10 +132,18 @@ public class CliImpl implements Cli{
                     //config file, the user given config file and the command line arguments.
                     RawInput rawInput = new RawInput();
 
+                    //if c option is given, read config file at given path.
+                    //Otherwise, read config.json in same directory as jar
                     try {
-                        defaultConfigFileReader.read(rawInput);
-                    } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.DEFAULT_CONFIG_READING_FAILED, t);
+                        if (commandLine.hasOption("c")) {
+                            String configFilePathArg = commandLine.getOptionValue("c");
+                            Path configFilePath = Paths.get(configFilePathArg);
+                            configFileReader.readConfigFile(rawInput, configFilePath);
+                        } else {
+                            configFileReader.readConfigFile(rawInput);
+                        }
+                    } catch(Throwable t) {
+                        throw new CommandLineException(CommandLineExceptionType.CONFIG_FILE_READING_FAILED, t);
                     }
 
                     try {
@@ -200,12 +205,12 @@ public class CliImpl implements Cli{
         this.processLayer = processLayer;
     }
 
-    public DefaultConfigFileReader getDefaultConfigFileReader() {
-        return defaultConfigFileReader;
+    public ConfigFileReader getConfigFileReader() {
+        return configFileReader;
     }
 
-    public void setDefaultConfigFileReader(DefaultConfigFileReader defaultConfigFileReader) {
-        this.defaultConfigFileReader = defaultConfigFileReader;
+    public void setConfigFileReader(ConfigFileReader configFileReader) {
+        this.configFileReader = configFileReader;
     }
 
     public CommandLineArgumentsReader getCommandLineArgumentsReader() {

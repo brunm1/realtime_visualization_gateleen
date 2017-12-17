@@ -1,18 +1,18 @@
 package ch.bfh.ti.gapa.cli.config.parsing;
 
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInputField;
+import ch.bfh.ti.gapa.cli.config.ConfigField;
 
 /**
  * Depicts an exception thrown when parsing a field.
- * Wraps a {@link Throwable} and adds the {@link RawInputField}
+ * Wraps a {@link Throwable} and adds the {@link ConfigField}
  * that could not be parsed.
  */
 public class RawInputParseException extends Throwable{
-    private RawInputField rawInputField;
+    private ConfigField configField;
     private Throwable reason;
 
-    RawInputParseException(RawInputField rawInputField, Throwable reason) {
-        this.rawInputField = rawInputField;
+    RawInputParseException(ConfigField configField, Throwable reason) {
+        this.configField = configField;
         this.reason = reason;
     }
 
@@ -22,6 +22,6 @@ public class RawInputParseException extends Throwable{
      */
     @Override
     public String getMessage() {
-        return "Parsing failed on field " + rawInputField + ".\n" + reason.getMessage();
+        return "Parsing failed on field " + configField + ".\n" + reason.getMessage();
     }
 }

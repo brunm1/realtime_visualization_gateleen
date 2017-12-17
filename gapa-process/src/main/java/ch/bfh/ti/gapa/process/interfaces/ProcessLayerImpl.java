@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,6 @@ public class ProcessLayerImpl implements ProcessLayer{
     private List<Record> convertMessagesToRecords() {
         //convert messages to domain model used by process logic
         return gapaMessageRecorder.getGapaMessages().stream().map(gapaMessage -> {
-            LOGGER.info(gapaMessage.toString());
             Record record = new Record();
             record.setHttpMethod(gapaMessage.getMethod().name());
             if (gapaMessage.getType() == GapaMessage.Type.inbound) {
@@ -83,8 +83,13 @@ public class ProcessLayerImpl implements ProcessLayer{
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                //TODO differentiate between normal close and forced close by server
-                LOGGER.info("Connection closed by " + ( remote ? "remote peer" : "us" ) + " Code: " + code + " Reason: " + reason );
+                if(code == 1006) {
+                    LOGGER.warning("Connection closed abnormally by " + ( remote ? "remote peer" : "us" ) + ". Code: " + code + " Reason: " + reason );
+                } else if(code == 1000) {
+                    LOGGER.log(Level.FINE,"Connection closed normally.");
+                } else {
+                    LOGGER.warning("Unknown connection closing by " + ( remote ? "remote peer" : "us" ) + ". Code: " + code + " Reason: " + reason );
+                }
                 generatePlantUml();
             }
         };
