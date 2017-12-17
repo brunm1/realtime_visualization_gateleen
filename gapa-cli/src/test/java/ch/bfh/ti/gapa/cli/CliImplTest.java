@@ -5,6 +5,9 @@ import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
+import ch.bfh.ti.gapa.process.AsyncTaskHandler;
 import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
@@ -20,12 +23,13 @@ class CliImplTest {
     private static ByteArrayOutputStream stderrByteArrayOutputStream;
     private ProcessLayer processLayerMock = new ProcessLayer() {
         @Override
-        public void startRecording(Input input) {
+        public void stopRecording() {
+
         }
 
         @Override
-        public String stopRecording() {
-            return "";
+        public void run(Input input, AsyncTaskHandler<String> asyncHandler) {
+            asyncHandler.onResult("");
         }
     };
     private DefaultConfigFileReader defaultConfigFileReaderMock = input -> {};
@@ -33,7 +37,17 @@ class CliImplTest {
     private RawInputParser rawInputParserMock = (rawInput, input) -> {};
     private CliOptions cliOptions = new CliOptions();
     private InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
-    private InputSupplier inputSupplier = () -> "";
+    private NonBlockingStdIn nonBlockingStdIn = new NonBlockingStdIn() {
+        @Override
+        public void start(NonBlockingStdInHandler nonBlockingStdInHandler) {
+            nonBlockingStdInHandler.onReadLine("");
+        }
+
+        @Override
+        public void close() {
+
+        }
+    };
     private CliImpl cliImpl = new CliImpl(
             processLayerMock,
             defaultConfigFileReaderMock,
@@ -41,7 +55,7 @@ class CliImplTest {
             rawInputParserMock,
             infoPrinter,
             cliOptions,
-            inputSupplier
+            nonBlockingStdIn
     );
 
     @BeforeAll

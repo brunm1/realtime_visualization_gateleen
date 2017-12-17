@@ -33,17 +33,33 @@ public class ServerMock {
         httpServer = vertx.createHttpServer();
 
         //Add websocket handler.
-        //We only support one websocket client for now
-        httpServer.websocketHandler(event -> {
-            LOGGER.info("A WebsocketClient has connected.");
-            webSocketClient.set(event);
+        //We only support ONE websocket client for now!
+        httpServer.websocketHandler(con -> {
+            LOGGER.info("A WebsocketClient has connected");
+            con.closeHandler( (con2) -> {
+                LOGGER.info("A WebsocketClient has disconnected");
+
+            });
+            webSocketClient.set(con);
         });
 
         //The classes JsonSender, GapaMessageToJsonConverter and GapaMessage come
         //from the gapa-integration module which this server depends on.
 
         //The jsonSender takes a json object and sends it over the websocket connection
-        JsonSender jsonSender = jsonObject -> webSocketClient.get().writeFinalTextFrame(jsonObject.toString());
+        JsonSender jsonSender = jsonObject -> {
+            if(webSocketClient.get() != null) {
+                String json = jsonObject.toString();
+                LOGGER.info("Server sends message about request to gapa: " + json);
+                try {
+                    webSocketClient.get().writeFinalTextFrame(json);
+                } catch (IllegalStateException e) {
+                    LOGGER.info("Gapa client already disconnected.");
+                }
+            } else {
+                LOGGER.info("There is no gapa client connected. Not sending message.");
+            }
+        };
 
         //the converter takes a gapa message, converts it to JSON and passes it to the jsonSender
         gapaMessageToJsonConverter = new GapaMessageToJsonConverter(jsonSender);
@@ -51,7 +67,7 @@ public class ServerMock {
         //send message about request to Gapa
         //The name of the service that sent the request is given in the "service" header.
         httpServer.requestHandler(httpServerRequest -> {
-            LOGGER.info("Server receives request: " + httpServerRequest.toString());
+            LOGGER.info("Server receives request: " + httpServerRequest.absoluteURI());
 
             GapaMessage gapaMessage = new GapaMessage();
             gapaMessage.setMethod(GapaMessage.Method.valueOf(httpServerRequest.method().name()));
@@ -60,8 +76,10 @@ public class ServerMock {
             gapaMessage.setPath(httpServerRequest.path());
             gapaMessage.setTimestamp(Instant.now());
 
-            LOGGER.info("Server sends message about request to gapa: " + gapaMessage.toString());
             gapaMessageToJsonConverter.sendGapaMessage(gapaMessage);
+
+            //send 200 ok
+            httpServerRequest.response().end();
         });
 
         //start http server at a short lived port (vertx chooses one itself)
@@ -78,7 +96,7 @@ public class ServerMock {
      */
     public void sendGapaMessages(List<GapaMessage> gapaMessages) {
         for(GapaMessage gapaMessage: gapaMessages) {
-            LOGGER.info("Sending predefined gapa message: " + gapaMessage.toString());
+            LOGGER.info("Sending predefined gapa message");
             //converts the message to json which is sent over the wire
             gapaMessageToJsonConverter.sendGapaMessage(gapaMessage);
         }

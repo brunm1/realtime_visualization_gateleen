@@ -1,6 +1,7 @@
 package ch.bfh.ti.gapa.process.interfaces;
 
-public interface ProcessLayer {
-    void startRecording(Input input);
-    String stopRecording();
+import ch.bfh.ti.gapa.process.AsyncTask;
+
+public interface ProcessLayer extends AsyncTask<String, Input> {
+    void stopRecording();
 }

@@ -142,9 +142,10 @@ abstract class ApplicationTest {
         simulateUserInput();
 
         ProcessOutput processOutput = new ProcessOutput();
+        processOutput.setExitCode(process.waitFor());
         processOutput.setStdErr(getProcessOutput(process.getErrorStream()));
         processOutput.setStdOut(getProcessOutput(process.getInputStream()));
-        processOutput.setExitCode(process.waitFor());
+
         return processOutput;
     }
 

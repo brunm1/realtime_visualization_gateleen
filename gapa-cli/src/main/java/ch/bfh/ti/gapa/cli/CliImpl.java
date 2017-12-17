@@ -1,25 +1,30 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.DefaultConfigFileReaderImpl;
-import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
-import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
 import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
+import ch.bfh.ti.gapa.process.SynchronizedTask;
 import ch.bfh.ti.gapa.process.interfaces.Input;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.ParseException;
 
-import java.io.IOException;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -28,13 +33,15 @@ import java.util.stream.Collectors;
  * passes the configuration to the process layer.
  */
 public class CliImpl implements Cli{
+    private static final Logger LOGGER = Logger.getLogger(CliImpl.class.getName());
+
     private ProcessLayer processLayer;
     private DefaultConfigFileReader defaultConfigFileReader;
     private CommandLineArgumentsReader commandLineArgumentsReader;
     private RawInputParser rawInputParser;
     private InfoPrinter infoPrinter;
     private CliOptions cliOptions;
-    private InputSupplier inputSupplier;
+    private NonBlockingStdIn nonBlockingStdIn;
 
     /**
      * @param processLayer read config data is passed to the process layer
@@ -43,19 +50,19 @@ public class CliImpl implements Cli{
      * @param rawInputParser parses read config data
      * @param infoPrinter prints data to stdout
      * @param cliOptions contains allowed command line options
-     * @param inputSupplier used to request input from the user
+     * @param nonBlockingStdIn used to request input from the user
      */
     public CliImpl(ProcessLayer processLayer, DefaultConfigFileReader defaultConfigFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
                    RawInputParser rawInputParser, InfoPrinter infoPrinter,
-                   CliOptions cliOptions, InputSupplier inputSupplier) {
+                   CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn) {
         this.processLayer = processLayer;
         this.defaultConfigFileReader = defaultConfigFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.rawInputParser = rawInputParser;
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
-        this.inputSupplier = inputSupplier;
+        this.nonBlockingStdIn = nonBlockingStdIn;
     }
 
     /**
@@ -86,15 +93,7 @@ public class CliImpl implements Cli{
         this.rawInputParser = rawInputParser;
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
-        this.inputSupplier = () -> {
-            try {
-                System.in.read();
-            } catch (IOException e) {
-                //TODO handle input exception meaningful
-                e.printStackTrace();
-            }
-            return "";
-        };
+        this.nonBlockingStdIn = new NonBlockingStdInImpl();
     }
 
     /**
@@ -155,17 +154,9 @@ public class CliImpl implements Cli{
                         throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
                     }
 
-                    //TODO additional validation step to avoid nullpointers (websocket has to be present)
-
                     try {
-                        processLayer.startRecording(input);
-
-                        //wait until user gives input
-                        inputSupplier.requestInput();
-
-                        //stop recording
-                        String plantUmlDiagram = processLayer.stopRecording();
-                        System.out.println(plantUmlDiagram);
+                        String plantUml = syncProcessLayerStartRecording(input);
+                        System.out.println(plantUml);
                     } catch (Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
                     }
@@ -179,6 +170,16 @@ public class CliImpl implements Cli{
             return e.getCommandLineExceptionType().getCode();
         }
         return 0;
+    }
+
+    private String syncProcessLayerStartRecording(Input input) throws Throwable {
+        SynchronizedTask<String, Input> synchronizedTask = new SynchronizedTask<>(processLayer);
+
+        //Listen to stdin when websocket connection was started
+        //This allows to stop recording when user pressed enter key
+        Runnable runAfter = () -> nonBlockingStdIn.start(line -> processLayer.stopRecording());
+
+        return synchronizedTask.run(input, runAfter);
     }
 
     /**
@@ -239,11 +240,11 @@ public class CliImpl implements Cli{
         this.cliOptions = cliOptions;
     }
 
-    public InputSupplier getInputSupplier() {
-        return inputSupplier;
+    public NonBlockingStdIn getNonBlockingStdIn() {
+        return nonBlockingStdIn;
     }
 
-    public void setInputSupplier(InputSupplier inputSupplier) {
-        this.inputSupplier = inputSupplier;
+    public void setNonBlockingStdIn(NonBlockingStdIn nonBlockingStdIn) {
+        this.nonBlockingStdIn = nonBlockingStdIn;
     }
 }
