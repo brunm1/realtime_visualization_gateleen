@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ProcessLayerImpl implements ProcessLayer{
     private static final Logger LOGGER = Logger.getLogger(ProcessLayerImpl.class.getName());
 
-    private Input input;
+    private ProcessLayerInput processLayerInput;
     private GapaMessageRecorder gapaMessageRecorder;
     private GapaWebSocketClient gapaWebSocketClient;
     private AsyncTaskHandler<String> asyncHandler;
@@ -35,10 +35,10 @@ public class ProcessLayerImpl implements ProcessLayer{
             Record record = new Record();
             record.setHttpMethod(gapaMessage.getMethod().name());
             if (gapaMessage.getType() == GapaMessage.Type.inbound) {
-                record.setRecipient(input.getServerName());
+                record.setRecipient(processLayerInput.getServerName());
                 record.setSender(gapaMessage.getPeer());
             } else {
-                record.setSender(input.getServerName());
+                record.setSender(processLayerInput.getServerName());
                 record.setRecipient(gapaMessage.getPeer());
             }
             record.setTime(LocalDateTime.ofInstant(gapaMessage.getTimestamp(), ZoneOffset.UTC));
@@ -51,8 +51,8 @@ public class ProcessLayerImpl implements ProcessLayer{
         List<Record> records = convertMessagesToRecords();
 
         //apply filters
-        if (input.getFilters() != null) {
-            List<Predicate<Record>> filters = FilterConverter.convert(input.getFilters());
+        if (processLayerInput.getFilters() != null) {
+            List<Predicate<Record>> filters = FilterConverter.convert(processLayerInput.getFilters());
             Predicate<Record> theOneFilter = filters.stream().reduce(Predicate::and).orElse(x -> true);
             records = records.stream().filter(theOneFilter).collect(Collectors.toList());
         }
@@ -68,8 +68,8 @@ public class ProcessLayerImpl implements ProcessLayer{
     }
 
     @Override
-    public void run(Input input, AsyncTaskHandler<String> asyncHandler) {
-        this.input = input;
+    public void run(ProcessLayerInput processLayerInput, AsyncTaskHandler<String> asyncHandler) {
+        this.processLayerInput = processLayerInput;
         this.asyncHandler = asyncHandler;
 
         gapaMessageRecorder = new GapaMessageRecorder();
@@ -93,7 +93,7 @@ public class ProcessLayerImpl implements ProcessLayer{
                 generatePlantUml();
             }
         };
-        gapaWebSocketClient = new GapaWebSocketClient(input.getWebsocketUri(), stringReceiver, gapaWebSocketClientHandler);
+        gapaWebSocketClient = new GapaWebSocketClient(processLayerInput.getWebsocketUri(), stringReceiver, gapaWebSocketClientHandler);
         gapaWebSocketClient.connect();
     }
 }

@@ -2,7 +2,7 @@ package ch.bfh.ti.gapa.cli.config.reading.file;
 
 import ch.bfh.ti.gapa.cli.CliImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
 import org.json.JSONObject;
 
@@ -30,7 +30,7 @@ public class ConfigFileReaderImpl implements ConfigFileReader {
     /**
      *
      * @param jsonConfigValidator validates config file data
-     * @param jsonReader reads config data into {@link RawInput}
+     * @param jsonReader reads config data into {@link CliInput}
      */
     public ConfigFileReaderImpl(JsonConfigValidator jsonConfigValidator, JsonReader jsonReader) {
         this.configFileValidator = jsonConfigValidator;
@@ -55,33 +55,33 @@ public class ConfigFileReaderImpl implements ConfigFileReader {
     /**
      * Reads configuration from valid config file in same directory.
      * Logs a message if the config file does not exist.
-     * @param rawInput Data is read into this instance.
+     * @param cliInput Data is read into this instance.
      */
     @Override
-    public void readConfigFile(RawInput rawInput){
-        readConfigFile(rawInput, true, createDefaultConfigFilePath());
+    public void readConfigFile(CliInput cliInput){
+        readConfigFile(cliInput, true, createDefaultConfigFilePath());
     }
 
     /**
      * Reads configuration from valid config file.
      * Throws if config file does not exist.
-     * @param rawInput Data is read into this instance.
+     * @param cliInput Data is read into this instance.
      * @throws IllegalArgumentException if config file does not exist
      */
     @Override
-    public void readConfigFile(RawInput rawInput, Path configFilePath) {
-        readConfigFile(rawInput, false, configFilePath);
+    public void readConfigFile(CliInput cliInput, Path configFilePath) {
+        readConfigFile(cliInput, false, configFilePath);
     }
 
-    private void readConfigFile(RawInput rawInput, boolean optional, Path configFilePath) {
+    private void readConfigFile(CliInput cliInput, boolean optional, Path configFilePath) {
         if(Files.exists(configFilePath)) {
             InputStream inputStream = getConfigFileInputStream(configFilePath);
 
             //read and validate config file
             JSONObject jsonObject = configFileValidator.validate(inputStream);
 
-            //Read from json object into rawInput
-            jsonReader.read(rawInput, jsonObject);
+            //Read from json object into cliInput
+            jsonReader.read(cliInput, jsonObject);
         } else {
             String path = configFilePath.toString();
             if(optional) {

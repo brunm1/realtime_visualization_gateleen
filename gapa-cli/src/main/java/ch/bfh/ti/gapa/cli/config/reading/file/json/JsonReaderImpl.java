@@ -1,22 +1,22 @@
 package ch.bfh.ti.gapa.cli.config.reading.file.json;
 
-import ch.bfh.ti.gapa.cli.config.ConfigField;
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.ConfigField;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import org.json.JSONObject;
 
 /**
  * Reads the data from a json object into
- * an {@link RawInput} instance.
+ * an {@link CliInput} instance.
  */
 public class JsonReaderImpl implements JsonReader {
     /**
-     * Creates an instance of {@link RawInput} and copies data from a {@link JSONObject} to this instance.
+     * Creates an instance of {@link CliInput} and copies data from a {@link JSONObject} to this instance.
      * The websocketUri and serverName are read as string.
      * The filters are optional and are read as {@link org.json.JSONArray}.
      */
-    public void read(RawInput rawInput, JSONObject jsonObject) {
-        rawInput.setWebsocketUri(jsonObject.optString(ConfigField.websocketUri.name()));
-        rawInput.setFilters(jsonObject.optJSONArray(ConfigField.filters.name()));
-        rawInput.setServerName(jsonObject.optString(ConfigField.serverName.name()));
+    public void read(CliInput cliInput, JSONObject jsonObject) {
+        cliInput.setWebsocketUri(jsonObject.optString(ConfigField.websocketUri.name()));
+        cliInput.setFilters(jsonObject.optJSONArray(ConfigField.filters.name()));
+        cliInput.setServerName(jsonObject.optString(ConfigField.serverName.name()));
     }
 }

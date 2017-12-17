@@ -1,15 +1,15 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
 import ch.bfh.ti.gapa.process.AsyncTaskHandler;
-import ch.bfh.ti.gapa.process.interfaces.Input;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
@@ -30,23 +30,23 @@ class CliImplTest {
         }
 
         @Override
-        public void run(Input input, AsyncTaskHandler<String> asyncHandler) {
+        public void run(ProcessLayerInput processLayerInput, AsyncTaskHandler<String> asyncHandler) {
             asyncHandler.onResult("");
         }
     };
     private ConfigFileReader configFileReader = new ConfigFileReader() {
         @Override
-        public void readConfigFile(RawInput rawInput) {
+        public void readConfigFile(CliInput cliInput) {
 
         }
 
         @Override
-        public void readConfigFile(RawInput rawInput, Path configFilePath) {
+        public void readConfigFile(CliInput cliInput, Path configFilePath) {
 
         }
     };
     private CommandLineArgumentsReader commandLineArgumentsReaderMock = (input, commandLine) -> {};
-    private RawInputParser rawInputParserMock = (rawInput, input) -> {};
+    private CliInputParser cliInputParserMock = (rawInput, input) -> {};
     private CliOptions cliOptions = new CliOptions();
     private InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
     private NonBlockingStdIn nonBlockingStdIn = new NonBlockingStdIn() {
@@ -64,7 +64,7 @@ class CliImplTest {
             processLayerMock,
             configFileReader,
             commandLineArgumentsReaderMock,
-            rawInputParserMock,
+            cliInputParserMock,
             infoPrinter,
             cliOptions,
             nonBlockingStdIn

@@ -1,11 +1,11 @@
 package ch.bfh.ti.gapa.cli.config.reading.file;
 
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 
 import java.nio.file.Path;
 
 public interface ConfigFileReader {
-    void readConfigFile(RawInput rawInput);
+    void readConfigFile(CliInput cliInput);
 
-    void readConfigFile(RawInput rawInput, Path configFilePath);
+    void readConfigFile(CliInput cliInput, Path configFilePath);
 }

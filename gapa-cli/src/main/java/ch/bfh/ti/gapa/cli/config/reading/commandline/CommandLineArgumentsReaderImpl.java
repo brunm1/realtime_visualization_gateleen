@@ -1,7 +1,7 @@
 package ch.bfh.ti.gapa.cli.config.reading.commandline;
 
-import ch.bfh.ti.gapa.cli.config.ConfigField;
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.ConfigField;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import org.apache.commons.cli.CommandLine;
 
 import java.util.function.Consumer;
@@ -19,12 +19,12 @@ public class CommandLineArgumentsReaderImpl implements CommandLineArgumentsReade
      * Reads in remaining values from cli arguments.
      * Overwrites values from loaded config files.
      * Sets the default values if no value was set after reading cli arguments.
-     * @param rawInput A {@link RawInput} instance. Configuration is read into this instance.
+     * @param cliInput A {@link CliInput} instance. Configuration is read into this instance.
      * @param commandLine An instance of type {@link CommandLine} which contains command line options.
      */
-    public void read(RawInput rawInput, CommandLine commandLine) {
-        overwrite(rawInput::setWebsocketUri, rawInput::getWebsocketUri, "w", commandLine, ConfigField.websocketUri);
-        overwrite(rawInput::setServerName, rawInput::getServerName, "n", commandLine, ConfigField.serverName);
+    public void read(CliInput cliInput, CommandLine commandLine) {
+        overwrite(cliInput::setWebsocketUri, cliInput::getWebsocketUri, "w", commandLine, ConfigField.websocketUri);
+        overwrite(cliInput::setServerName, cliInput::getServerName, "n", commandLine, ConfigField.serverName);
     }
 
     private void overwrite(Consumer<String> setter, Supplier<String> getter, String option,

@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.config;
+package ch.bfh.ti.gapa.cli.config.model;
 
 /**
  * Contains all config field names

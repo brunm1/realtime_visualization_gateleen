@@ -1,17 +1,17 @@
 package ch.bfh.ti.gapa.cli.config.parsing;
 
-import ch.bfh.ti.gapa.cli.config.ConfigField;
+import ch.bfh.ti.gapa.cli.config.model.ConfigField;
 
 /**
  * Depicts an exception thrown when parsing a field.
  * Wraps a {@link Throwable} and adds the {@link ConfigField}
  * that could not be parsed.
  */
-public class RawInputParseException extends Throwable{
+public class CliInputParseException extends Throwable{
     private ConfigField configField;
     private Throwable reason;
 
-    RawInputParseException(ConfigField configField, Throwable reason) {
+    CliInputParseException(ConfigField configField, Throwable reason) {
         this.configField = configField;
         this.reason = reason;
     }

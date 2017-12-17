@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli.config.reading.model;
+package ch.bfh.ti.gapa.cli.config.model;
 
 import org.json.JSONArray;
 
@@ -8,7 +8,7 @@ import org.json.JSONArray;
  * the config data can be overwritten if several
  * config sources are used.
  */
-public class RawInput {
+public class CliInput {
     private String websocketUri;
     private JSONArray filters;
     private String serverName;

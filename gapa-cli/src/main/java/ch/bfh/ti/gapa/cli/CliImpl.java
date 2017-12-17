@@ -1,7 +1,7 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.config.parsing.RawInputParser;
-import ch.bfh.ti.gapa.cli.config.parsing.RawInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
@@ -10,14 +10,14 @@ import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
-import ch.bfh.ti.gapa.cli.config.reading.model.RawInput;
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
 import ch.bfh.ti.gapa.process.SynchronizedTask;
-import ch.bfh.ti.gapa.process.interfaces.Input;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
 import org.apache.commons.cli.CommandLine;
@@ -40,7 +40,7 @@ public class CliImpl implements Cli{
     private ProcessLayer processLayer;
     private ConfigFileReader configFileReader;
     private CommandLineArgumentsReader commandLineArgumentsReader;
-    private RawInputParser rawInputParser;
+    private CliInputParser cliInputParser;
     private InfoPrinter infoPrinter;
     private CliOptions cliOptions;
     private NonBlockingStdIn nonBlockingStdIn;
@@ -49,19 +49,19 @@ public class CliImpl implements Cli{
      * @param processLayer read config data is passed to the process layer
      * @param configFileReader reads the default config file
      * @param commandLineArgumentsReader reads configuration from command line arguments
-     * @param rawInputParser parses read config data
+     * @param cliInputParser parses read config data
      * @param infoPrinter prints data to stdout
      * @param cliOptions contains allowed command line options
      * @param nonBlockingStdIn used to request input from the user
      */
     public CliImpl(ProcessLayer processLayer, ConfigFileReader configFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
-                   RawInputParser rawInputParser, InfoPrinter infoPrinter,
+                   CliInputParser cliInputParser, InfoPrinter infoPrinter,
                    CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn) {
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
-        this.rawInputParser = rawInputParser;
+        this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
         this.nonBlockingStdIn = nonBlockingStdIn;
@@ -74,7 +74,7 @@ public class CliImpl implements Cli{
         ProcessLayer processLayer = new ProcessLayerImpl();
         JsonConfigValidator jsonConfigValidator = new JsonConfigValidatorImpl();
         JsonReader jsonReader = new JsonReaderImpl();
-        RawInputParser rawInputParser = new RawInputParserImpl();
+        CliInputParser cliInputParser = new CliInputParserImpl();
 
         ConfigFileReader configFileReader = new ConfigFileReaderImpl(jsonConfigValidator, jsonReader);
 
@@ -87,7 +87,7 @@ public class CliImpl implements Cli{
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
-        this.rawInputParser = rawInputParser;
+        this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
         this.nonBlockingStdIn = new NonBlockingStdInImpl();
@@ -128,9 +128,9 @@ public class CliImpl implements Cli{
                         throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
                     }
 
-                    //The RawInput instance stores all configuration that is read in from the default
-                    //config file, the user given config file and the command line arguments.
-                    RawInput rawInput = new RawInput();
+                    //The CliInput instance stores all configuration that is read from the config file
+                    // and the command line arguments.
+                    CliInput cliInput = new CliInput();
 
                     //if c option is given, read config file at given path.
                     //Otherwise, read config.json in same directory as jar
@@ -138,29 +138,29 @@ public class CliImpl implements Cli{
                         if (commandLine.hasOption("c")) {
                             String configFilePathArg = commandLine.getOptionValue("c");
                             Path configFilePath = Paths.get(configFilePathArg);
-                            configFileReader.readConfigFile(rawInput, configFilePath);
+                            configFileReader.readConfigFile(cliInput, configFilePath);
                         } else {
-                            configFileReader.readConfigFile(rawInput);
+                            configFileReader.readConfigFile(cliInput);
                         }
                     } catch(Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.CONFIG_FILE_READING_FAILED, t);
                     }
 
                     try {
-                        commandLineArgumentsReader.read(rawInput, commandLine);
+                        commandLineArgumentsReader.read(cliInput, commandLine);
                     } catch (Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
                     }
 
-                    Input input = new Input();
+                    ProcessLayerInput processLayerInput = new ProcessLayerInput();
                     try {
-                        rawInputParser.parse(rawInput, input);
+                        cliInputParser.parse(cliInput, processLayerInput);
                     } catch (Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
                     }
 
                     try {
-                        String plantUml = syncProcessLayerStartRecording(input);
+                        String plantUml = syncProcessLayerStartRecording(processLayerInput);
                         System.out.println(plantUml);
                     } catch (Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
@@ -177,14 +177,14 @@ public class CliImpl implements Cli{
         return 0;
     }
 
-    private String syncProcessLayerStartRecording(Input input) throws Throwable {
-        SynchronizedTask<String, Input> synchronizedTask = new SynchronizedTask<>(processLayer);
+    private String syncProcessLayerStartRecording(ProcessLayerInput processLayerInput) throws Throwable {
+        SynchronizedTask<String, ProcessLayerInput> synchronizedTask = new SynchronizedTask<>(processLayer);
 
         //Listen to stdin when websocket connection was started
         //This allows to stop recording when user pressed enter key
         Runnable runAfter = () -> nonBlockingStdIn.start(line -> processLayer.stopRecording());
 
-        return synchronizedTask.run(input, runAfter);
+        return synchronizedTask.run(processLayerInput, runAfter);
     }
 
     /**
@@ -221,12 +221,12 @@ public class CliImpl implements Cli{
         this.commandLineArgumentsReader = commandLineArgumentsReader;
     }
 
-    public RawInputParser getRawInputParser() {
-        return rawInputParser;
+    public CliInputParser getCliInputParser() {
+        return cliInputParser;
     }
 
-    public void setRawInputParser(RawInputParser rawInputParser) {
-        this.rawInputParser = rawInputParser;
+    public void setCliInputParser(CliInputParser cliInputParser) {
+        this.cliInputParser = cliInputParser;
     }
 
     public InfoPrinter getInfoPrinter() {

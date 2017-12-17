@@ -1,6 +1,6 @@
 package ch.bfh.ti.gapa.cli;
 
-import ch.bfh.ti.gapa.cli.config.ConfigField;
+import ch.bfh.ti.gapa.cli.config.model.ConfigField;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -52,6 +54,11 @@ class DefaultApplicationTest extends ApplicationTest{
         new SequenceDiagramGenerator().exportPlantUmlAsSvg(expectedPlantUml,byteArrayOutputStream);
         //convert bytes to string
         String actualSvg = byteArrayOutputStream.toString("utf8");
+
+        //Use following code to copy svg to resources.
+        //Check if svg can be rendered in browser!
+//        FileOutputStream outputStream = new FileOutputStream(new File(this.getClass().getResource("/expected.svg").getFile()));
+//        outputStream.write(actualSvg.getBytes());
 
         Assertions.assertEquals(expectedSvg, actualSvg);
     }

@@ -1,7 +1,5 @@
 package ch.bfh.ti.gapa.process;
 
-import ch.bfh.ti.gapa.process.interfaces.Input;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
