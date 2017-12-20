@@ -26,7 +26,8 @@ import org.apache.commons.cli.ParseException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
+import java.util.function.Consumer;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +45,7 @@ public class CliImpl implements Cli{
     private InfoPrinter infoPrinter;
     private CliOptions cliOptions;
     private NonBlockingStdIn nonBlockingStdIn;
+    private Consumer<String> printer;
 
     /**
      * @param processLayer read config data is passed to the process layer
@@ -57,7 +59,7 @@ public class CliImpl implements Cli{
     public CliImpl(ProcessLayer processLayer, ConfigFileReader configFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
                    CliInputParser cliInputParser, InfoPrinter infoPrinter,
-                   CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn) {
+                   CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn, Consumer<String> printer) {
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
@@ -65,6 +67,7 @@ public class CliImpl implements Cli{
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
         this.nonBlockingStdIn = nonBlockingStdIn;
+        this.printer = printer;
     }
 
     /**
@@ -91,6 +94,7 @@ public class CliImpl implements Cli{
         this.infoPrinter = infoPrinter;
         this.cliOptions = cliOptions;
         this.nonBlockingStdIn = new NonBlockingStdInImpl();
+        this.printer = System.out::println;
     }
 
     /**
@@ -161,7 +165,7 @@ public class CliImpl implements Cli{
 
                     try {
                         String plantUml = syncProcessLayerStartRecording(processLayerInput);
-                        System.out.println(plantUml);
+                        printer.accept(plantUml);
                     } catch (Throwable t) {
                         throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
                     }
@@ -192,6 +196,8 @@ public class CliImpl implements Cli{
      * @param args Command line arguments
      */
     public static void main(String[] args) {
+        //configure custom log format
+        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SimpleFormatter());
         int exitCode = new CliImpl().run(args);
 
         System.exit(exitCode);
@@ -251,5 +257,13 @@ public class CliImpl implements Cli{
 
     public void setNonBlockingStdIn(NonBlockingStdIn nonBlockingStdIn) {
         this.nonBlockingStdIn = nonBlockingStdIn;
+    }
+
+    public Consumer<String> getPrinter() {
+        return printer;
+    }
+
+    public void setPrinter(Consumer<String> printer) {
+        this.printer = printer;
     }
 }

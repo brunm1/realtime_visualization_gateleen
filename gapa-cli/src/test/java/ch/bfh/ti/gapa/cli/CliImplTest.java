@@ -1,21 +1,22 @@
 package ch.bfh.ti.gapa.cli;
 
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
-import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
 import ch.bfh.ti.gapa.process.AsyncTaskHandler;
-import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /**
 If test fails, fix it and correct also documentation
@@ -60,6 +61,8 @@ class CliImplTest {
 
         }
     };
+    //TODO make Cli independent from system streams so it can be better tested.
+    private Consumer<String> printer = System.out::println;
     private CliImpl cliImpl = new CliImpl(
             processLayerMock,
             configFileReader,
@@ -67,7 +70,8 @@ class CliImplTest {
             cliInputParserMock,
             infoPrinter,
             cliOptions,
-            nonBlockingStdIn
+            nonBlockingStdIn,
+            printer
     );
 
     @BeforeAll

@@ -19,8 +19,8 @@ class DefaultApplicationTest extends ApplicationTest{
      * gapa. The recording stops and exit code, stdout and stderr are verified. It is also verified
      * if the resulting PlantUml can be rendered as SVG.
      */
-    @Test
-    void defaultStart() throws IOException, InterruptedException {
+    @Override
+    void test() throws IOException, InterruptedException {
         connectGapaWithMockServer(new ArrayList<>());
 
         sendSampleMessagesToGapa();
@@ -37,12 +37,17 @@ class DefaultApplicationTest extends ApplicationTest{
         String expectedPlantUml = ResourceReader.readStringFromResource("/expected.plantuml");
         Assertions.assertEquals(expectedPlantUml, out.getStdOut());
 
-        //Check stderr output
-        String[] logLines = out.getStdErr().split("\n");
-        Assertions.assertEquals(2, logLines.length);
+        if(runJar) {
+            //Check stderr output
+            String[] logLines = out.getStdErr().split("\n");
+            Assertions.assertEquals(2, logLines.length);
 
-        //expect opened connection
-        Assertions.assertTrue(logLines[1].contains("Opened connection"));
+            //expect opened connection
+            Assertions.assertTrue(logLines[1].contains("Opened connection"));
+        }
+        //TODO implement a way to specifically verify log output of cli module when not run as a jar.
+
+
 
         //It is possible that the plantuml output cannot be rendered.
         //PlantUml has no usable API to check plantUml Syntax, so we check if the

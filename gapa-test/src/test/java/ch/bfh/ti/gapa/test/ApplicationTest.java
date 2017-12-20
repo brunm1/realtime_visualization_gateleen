@@ -1,7 +1,11 @@
 package ch.bfh.ti.gapa.test;
 
+import ch.bfh.ti.gapa.cli.CliImpl;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
 import ch.bfh.ti.gapa.process.reader.StringFromInputStreamReader;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +14,8 @@ import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Is used as the base class for application tests.
@@ -18,8 +24,14 @@ import java.util.List;
  * verifies its output.
  */
 abstract class ApplicationTest {
-    private ServerMock serverMock;
+    protected ServerMock serverMock;
     private Process process;
+    boolean runJar = false;
+
+    private int virtualExitCode;
+    private String virtualCliOutput;
+    private NonBlockingStdInHandler nonBlockingStdInHandler;
+    private CountDownLatch countDownLatch;
 
     /**
      * Find executable gapa.jar. It is a jar that contains all needed dependencies.
@@ -53,6 +65,26 @@ abstract class ApplicationTest {
         process = builder.start();
     }
 
+    private void runInSameJVM(List<String> args) {
+        CliImpl cli = new CliImpl();
+        countDownLatch = new CountDownLatch(1);
+        cli.setPrinter(s->virtualCliOutput=s+"\n");
+        cli.setNonBlockingStdIn(new NonBlockingStdIn() {
+            @Override
+            public void start(NonBlockingStdInHandler nonBlockingStdInHandler) {
+                ApplicationTest.this.nonBlockingStdInHandler = nonBlockingStdInHandler;
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+        new Thread(() -> {
+            virtualExitCode = cli.run(args.toArray(new String[args.size()]));
+            countDownLatch.countDown();
+        }).start();
+    }
+
     /**
      * Starts a server mock on a random port and runs gapa.jar with
      * the correct arguments to connect to it.
@@ -60,7 +92,7 @@ abstract class ApplicationTest {
      * @throws IOException can be raised when trying to run gapa.jar
      */
     void connectGapaWithMockServer(List<String> moreArgs) throws IOException {
-        //setup mock server which can sends messages to a connected gapa instance
+        //setup mock server which can send messages to a connected gapa instance
         serverMock = new ServerMock();
 
         List<String> args = new ArrayList<>();
@@ -68,7 +100,11 @@ abstract class ApplicationTest {
         args.add("ws://localhost:"+serverMock.getPort());
         args.addAll(moreArgs);
 
-        runGapaJar(args);
+        if(runJar) {
+            runGapaJar(args);
+        } else {
+            runInSameJVM(args);
+        }
 
         //Wait until client has connected
         serverMock.waitForConnection();
@@ -81,8 +117,13 @@ abstract class ApplicationTest {
     private void simulateUserInput() throws IOException {
         //The recording has to be terminated by the user by typing in arbitrary input
         //E.g. 10 for enter key
-        process.getOutputStream().write(10);
-        process.getOutputStream().close();
+
+        if(runJar) {
+            process.getOutputStream().write(10);
+            process.getOutputStream().close();
+        } else {
+            nonBlockingStdInHandler.onReadLine("\n");
+        }
     }
 
     /**
@@ -142,9 +183,22 @@ abstract class ApplicationTest {
         simulateUserInput();
 
         ProcessOutput processOutput = new ProcessOutput();
-        processOutput.setExitCode(process.waitFor());
-        processOutput.setStdErr(getProcessOutput(process.getErrorStream()));
-        processOutput.setStdOut(getProcessOutput(process.getInputStream()));
+
+        if(runJar) {
+            processOutput.setExitCode(process.waitFor());
+            processOutput.setStdErr(getProcessOutput(process.getErrorStream()));
+            processOutput.setStdOut(getProcessOutput(process.getInputStream()));
+        } else {
+            boolean ok = countDownLatch.await(3, TimeUnit.SECONDS);
+            if(!ok) {
+                throw new AssertionError("Cli took too long to finish.");
+            }
+            processOutput.setExitCode(virtualExitCode);
+            processOutput.setStdOut(virtualCliOutput);
+
+            //TODO set up log output redirection so it can be used here
+            processOutput.setStdErr("");
+        }
 
         return processOutput;
     }
@@ -179,5 +233,19 @@ abstract class ApplicationTest {
         m3.setTimestamp(Instant.now());
         messages.add(m3);
         serverMock.sendGapaMessages(messages);
+    }
+
+    abstract void test() throws Exception;
+
+    @Test
+    public void testJar() throws Exception {
+        runJar=true;
+        test();
+    }
+
+    @Test
+    public void testInSameJvm() throws Exception {
+        runJar=false;
+//        test();
     }
 }
