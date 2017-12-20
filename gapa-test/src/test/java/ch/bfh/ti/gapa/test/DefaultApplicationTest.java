@@ -40,10 +40,10 @@ class DefaultApplicationTest extends ApplicationTest{
         if(runJar) {
             //Check stderr output
             String[] logLines = out.getStdErr().split("\n");
-            Assertions.assertEquals(2, logLines.length);
+            Assertions.assertEquals(1, logLines.length);
 
             //expect opened connection
-            Assertions.assertTrue(logLines[1].contains("Opened connection"));
+            Assertions.assertTrue(logLines[0].contains("Opened connection"));
         }
         //TODO implement a way to specifically verify log output of cli module when not run as a jar.
 

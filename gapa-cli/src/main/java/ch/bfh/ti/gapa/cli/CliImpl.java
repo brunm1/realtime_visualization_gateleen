@@ -13,6 +13,7 @@ import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidato
 import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
+import ch.bfh.ti.gapa.cli.log.SlimFormatter;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
@@ -197,7 +198,7 @@ public class CliImpl implements Cli{
      */
     public static void main(String[] args) {
         //configure custom log format
-        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SimpleFormatter());
+        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
         int exitCode = new CliImpl().run(args);
 
         System.exit(exitCode);

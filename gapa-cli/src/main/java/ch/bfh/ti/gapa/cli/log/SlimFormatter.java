@@ -39,6 +39,8 @@ public class SlimFormatter extends Formatter {
             pw.close();
         }
 
+        pw.println();
+
         return sw.toString();
     }
 }

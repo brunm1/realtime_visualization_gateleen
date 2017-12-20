@@ -1,6 +1,7 @@
 package ch.bfh.ti.gapa.test;
 
 import ch.bfh.ti.gapa.cli.CliImpl;
+import ch.bfh.ti.gapa.cli.log.SlimFormatter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Is used as the base class for application tests.
@@ -245,7 +247,9 @@ abstract class ApplicationTest {
 
     @Test
     public void testInSameJvm() throws Exception {
+        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
+
         runJar=false;
-//        test();
+        test();
     }
 }
