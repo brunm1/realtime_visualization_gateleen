@@ -12,8 +12,9 @@ import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.exception.GapaCommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.log.SlimFormatter;
 import ch.bfh.ti.gapa.cli.printer.*;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStream;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamHandler;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamImpl;
 import ch.bfh.ti.gapa.process.SynchronizedTask;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
@@ -43,7 +44,7 @@ public class CliImpl implements Cli{
     private CliInputParser cliInputParser;
     private GapaInfoPrinter infoPrinter;
     private CliConfigOptions cliConfigOptions;
-    private NonBlockingStdIn nonBlockingStdIn;
+    private NonBlockingInputStream nonBlockingInputStream;
     private Consumer<String> printer;
     private CliPrintOptions cliPrintOptions;
 
@@ -54,20 +55,20 @@ public class CliImpl implements Cli{
      * @param cliInputParser parses read config data
      * @param infoPrinter prints data
      * @param cliConfigOptions contains allowed command line options for configuration
-     * @param nonBlockingStdIn used to request input from the user
+     * @param nonBlockingInputStream used to request input from the user
      * @param cliPrintOptions command line options to print information about the application
      */
     public CliImpl(ProcessLayer processLayer, ConfigFileReader configFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
                    CliInputParser cliInputParser, GapaInfoPrinter infoPrinter,
-                   CliConfigOptions cliConfigOptions, NonBlockingStdIn nonBlockingStdIn, Consumer<String> printer, CliPrintOptions cliPrintOptions) {
+                   CliConfigOptions cliConfigOptions, NonBlockingInputStream nonBlockingInputStream, Consumer<String> printer, CliPrintOptions cliPrintOptions) {
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
         this.cliConfigOptions = cliConfigOptions;
-        this.nonBlockingStdIn = nonBlockingStdIn;
+        this.nonBlockingInputStream = nonBlockingInputStream;
         this.printer = printer;
         this.cliPrintOptions = cliPrintOptions;
     }
@@ -94,7 +95,7 @@ public class CliImpl implements Cli{
         this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
         this.cliConfigOptions = cliConfigOptions;
-        this.nonBlockingStdIn = new NonBlockingStdInImpl();
+        this.nonBlockingInputStream = new NonBlockingInputStreamImpl();
         this.cliPrintOptions = cliPrintOptions;
         this.printer = System.out::println;
     }
@@ -200,7 +201,19 @@ public class CliImpl implements Cli{
 
         //Listen to stdin when websocket connection was started
         //This allows to stop recording when user pressed enter key
-        Runnable runAfter = () -> nonBlockingStdIn.start(line -> processLayer.stopRecording());
+        Runnable runAfter = () -> nonBlockingInputStream.start(System.in, new NonBlockingInputStreamHandler() {
+            @Override
+            public void onReadLine(String line) throws Throwable {
+                processLayer.stopRecording();
+            }
+
+            @Override
+            public void onException(Throwable t) {
+                //within the non blocking input stream or in the code called by onReadLine
+                //was an exception thrown. We stop the synchronized task immediately with the exception.
+                synchronizedTask.outsideExceptionInterrupts(t);
+            }
+        });
 
         return synchronizedTask.run(processLayerInput, runAfter);
     }
@@ -265,12 +278,12 @@ public class CliImpl implements Cli{
         this.cliConfigOptions = cliConfigOptions;
     }
 
-    public NonBlockingStdIn getNonBlockingStdIn() {
-        return nonBlockingStdIn;
+    public NonBlockingInputStream getNonBlockingInputStream() {
+        return nonBlockingInputStream;
     }
 
-    public void setNonBlockingStdIn(NonBlockingStdIn nonBlockingStdIn) {
-        this.nonBlockingStdIn = nonBlockingStdIn;
+    public void setNonBlockingInputStream(NonBlockingInputStream nonBlockingInputStream) {
+        this.nonBlockingInputStream = nonBlockingInputStream;
     }
 
     public Consumer<String> getPrinter() {

@@ -19,7 +19,7 @@ class GapaInfoPrinterImplTest {
     void printConfigSchema() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(out);
-        GapaInfoPrinterImpl gapaInfoPrinter = new GapaInfoPrinterImpl(pw);
+        GapaInfoPrinter gapaInfoPrinter = new GapaInfoPrinterImpl(pw);
         gapaInfoPrinter.printConfigSchema();
         pw.flush();
 

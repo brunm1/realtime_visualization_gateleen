@@ -8,13 +8,14 @@ import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.printer.CliPrintOptions;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStream;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamHandler;
 import ch.bfh.ti.gapa.process.AsyncTaskHandler;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import org.junit.jupiter.api.*;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
@@ -67,9 +68,9 @@ class CliImplTest {
 //            public void printConfigSchema() {
 //            }
         };
-        NonBlockingStdIn nonBlockingStdIn = new NonBlockingStdIn() {
+        NonBlockingInputStream nonBlockingInputStream = new NonBlockingInputStream() {
             @Override
-            public void start(NonBlockingStdInHandler nonBlockingStdInHandler) {
+            public void start(InputStream in, NonBlockingInputStreamHandler nonBlockingStdInHandler) {
             }
 
             @Override
@@ -85,7 +86,7 @@ class CliImplTest {
 //                cliInputParserMock,
 //                infoPrinter,
 //                cliConfigOptions,
-//                nonBlockingStdIn,
+//                nonBlockingInputStream,
 //                printer,
 //                cliPrintOptions);
     }
