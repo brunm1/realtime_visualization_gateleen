@@ -1,5 +1,6 @@
 package ch.bfh.ti.gapa.cli;
 
+import ch.bfh.ti.gapa.cli.config.CliConfigOptions;
 import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
 import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
@@ -8,9 +9,9 @@ import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderI
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
-import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
+import ch.bfh.ti.gapa.cli.exception.GapaCommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.log.SlimFormatter;
-import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
+import ch.bfh.ti.gapa.cli.printer.*;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
 import ch.bfh.ti.gapa.process.SynchronizedTask;
@@ -21,6 +22,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
@@ -39,10 +41,11 @@ public class CliImpl implements Cli{
     private ConfigFileReader configFileReader;
     private CommandLineArgumentsReader commandLineArgumentsReader;
     private CliInputParser cliInputParser;
-    private InfoPrinter infoPrinter;
-    private CliOptions cliOptions;
+    private GapaInfoPrinter infoPrinter;
+    private CliConfigOptions cliConfigOptions;
     private NonBlockingStdIn nonBlockingStdIn;
     private Consumer<String> printer;
+    private CliPrintOptions cliPrintOptions;
 
     /**
      * @param processLayer read config data is passed to the process layer
@@ -50,21 +53,23 @@ public class CliImpl implements Cli{
      * @param commandLineArgumentsReader reads configuration from command line arguments
      * @param cliInputParser parses read config data
      * @param infoPrinter prints data
-     * @param cliOptions contains allowed command line options
+     * @param cliConfigOptions contains allowed command line options for configuration
      * @param nonBlockingStdIn used to request input from the user
+     * @param cliPrintOptions command line options to print information about the application
      */
     public CliImpl(ProcessLayer processLayer, ConfigFileReader configFileReader,
                    CommandLineArgumentsReader commandLineArgumentsReader,
-                   CliInputParser cliInputParser, InfoPrinter infoPrinter,
-                   CliOptions cliOptions, NonBlockingStdIn nonBlockingStdIn, Consumer<String> printer) {
+                   CliInputParser cliInputParser, GapaInfoPrinter infoPrinter,
+                   CliConfigOptions cliConfigOptions, NonBlockingStdIn nonBlockingStdIn, Consumer<String> printer, CliPrintOptions cliPrintOptions) {
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
-        this.cliOptions = cliOptions;
+        this.cliConfigOptions = cliConfigOptions;
         this.nonBlockingStdIn = nonBlockingStdIn;
         this.printer = printer;
+        this.cliPrintOptions = cliPrintOptions;
     }
 
     /**
@@ -78,17 +83,28 @@ public class CliImpl implements Cli{
 
         CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl();
 
-        CliOptions options = new CliOptions();
-        InfoPrinter infoPrinter = new InfoPrinter(options);
+        CliConfigOptions cliConfigOptions = new CliConfigOptions();
+        CliPrintOptions cliPrintOptions = new CliPrintOptions();
+
+        GapaInfoPrinter infoPrinter = new GapaInfoPrinterImpl(new PrintWriter(System.out));
 
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
-        this.cliOptions = options;
+        this.cliConfigOptions = cliConfigOptions;
         this.nonBlockingStdIn = new NonBlockingStdInImpl();
+        this.cliPrintOptions = cliPrintOptions;
         this.printer = System.out::println;
+    }
+
+    private void throwOnUnrecognizedOptions(CommandLine commandLine) throws CommandLineException {
+        if (commandLine.getArgs().length > 0) {
+            Exception e = new Exception("Unrecognized arguments: " + commandLine.getArgList()
+                    .stream().collect(Collectors.joining(", ")));
+            throw new CommandLineException(GapaCommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
+        }
     }
 
     /**
@@ -100,31 +116,35 @@ public class CliImpl implements Cli{
         try {
             try {
                 DefaultParser defaultParser = new DefaultParser();
-                CommandLine commandLine = defaultParser.parse(cliOptions, args);
+                CommandLine commandLine = defaultParser.parse(cliPrintOptions, args, true);
 
-                if (commandLine.hasOption("h")) {
-                    infoPrinter.printHelp();
-                    return 0;
-                } else if(commandLine.hasOption("v")) {
-                    try {
-                        infoPrinter.printVersion();
+                // have they specified a print option?
+                if (commandLine.getOptions().length > 0) {
+                   //print option specified
+                    throwOnUnrecognizedOptions(commandLine);
+
+                    if (commandLine.hasOption("h")) {
+                        infoPrinter.printHelp();
                         return 0;
-                    } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.PRINT_VERSION_FAILED, t);
-                    }
-                } else if(commandLine.hasOption("s")) {
-                    try {
-                        infoPrinter.printConfigSchema();
-                        return 0;
-                    } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.PRINT_CONFIG_SCHEMA_FAILED, t);
+                    } else if(commandLine.hasOption("v")) {
+                        try {
+                            infoPrinter.printVersion();
+                            return 0;
+                        } catch (Throwable t) {
+                            throw new CommandLineException(GapaCommandLineExceptionType.PRINT_VERSION_FAILED, t);
+                        }
+                    } else if(commandLine.hasOption("s")) {
+                        try {
+                            infoPrinter.printConfigSchema();
+                            return 0;
+                        } catch (Throwable t) {
+                            throw new CommandLineException(GapaCommandLineExceptionType.PRINT_CONFIG_SCHEMA_FAILED, t);
+                        }
                     }
                 } else {
-                    if (commandLine.getArgs().length > 0) {
-                        Exception e = new Exception("Unrecognized arguments: " + commandLine.getArgList()
-                                .stream().collect(Collectors.joining(", ")));
-                        throw new CommandLineException(CommandLineExceptionType.UNRECOGNIZED_ARGUMENTS, e);
-                    }
+                    // Try to parse conig options
+                    commandLine = defaultParser.parse(cliConfigOptions, args);
+                    throwOnUnrecognizedOptions(commandLine);
 
                     //The CliInput instance stores all configuration that is read from the config file
                     // and the command line arguments.
@@ -141,31 +161,31 @@ public class CliImpl implements Cli{
                             configFileReader.readConfigFile(cliInput);
                         }
                     } catch(Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.CONFIG_FILE_READING_FAILED, t);
+                        throw new CommandLineException(GapaCommandLineExceptionType.CONFIG_FILE_READING_FAILED, t);
                     }
 
                     try {
                         commandLineArgumentsReader.read(cliInput, commandLine);
                     } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
+                        throw new CommandLineException(GapaCommandLineExceptionType.COMMAND_LINE_CONFIG_READING_FAILED, t);
                     }
 
                     ProcessLayerInput processLayerInput = new ProcessLayerInput();
                     try {
                         cliInputParser.parse(cliInput, processLayerInput);
                     } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.CONFIG_PARSING_FAILED, t);
+                        throw new CommandLineException(GapaCommandLineExceptionType.CONFIG_PARSING_FAILED, t);
                     }
 
                     try {
                         String plantUml = syncProcessLayerStartRecording(processLayerInput);
                         printer.accept(plantUml);
                     } catch (Throwable t) {
-                        throw new CommandLineException(CommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
+                        throw new CommandLineException(GapaCommandLineExceptionType.PROCESS_LOGIC_FAILED, t);
                     }
                 }
             } catch (ParseException e) {
-                throw new CommandLineException(CommandLineExceptionType.INVALID_COMMAND_USAGE, e);
+                throw new CommandLineException(GapaCommandLineExceptionType.INVALID_COMMAND_USAGE, e);
             }
         } catch (CommandLineException e) {
             //Print exception message and return exit code.
@@ -229,20 +249,20 @@ public class CliImpl implements Cli{
         this.cliInputParser = cliInputParser;
     }
 
-    public InfoPrinter getInfoPrinter() {
+    public GapaInfoPrinter getInfoPrinter() {
         return infoPrinter;
     }
 
-    public void setInfoPrinter(InfoPrinter infoPrinter) {
+    public void setInfoPrinter(GapaInfoPrinter infoPrinter) {
         this.infoPrinter = infoPrinter;
     }
 
-    public CliOptions getCliOptions() {
-        return cliOptions;
+    public CliConfigOptions getCliConfigOptions() {
+        return cliConfigOptions;
     }
 
-    public void setCliOptions(CliOptions cliOptions) {
-        this.cliOptions = cliOptions;
+    public void setCliConfigOptions(CliConfigOptions cliConfigOptions) {
+        this.cliConfigOptions = cliConfigOptions;
     }
 
     public NonBlockingStdIn getNonBlockingStdIn() {

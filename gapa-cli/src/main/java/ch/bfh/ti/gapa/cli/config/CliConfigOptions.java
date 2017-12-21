@@ -1,4 +1,4 @@
-package ch.bfh.ti.gapa.cli;
+package ch.bfh.ti.gapa.cli.config;
 
 import ch.bfh.ti.gapa.cli.config.model.ConfigField;
 import org.apache.commons.cli.Option;
@@ -6,31 +6,10 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 
 /**
- * Defines all possible command line arguments for the CLI.
+ * Defines command line arguments for configuration.
  */
-public class CliOptions extends Options {
-    CliOptions() {
-        OptionGroup printOptionGroup = new OptionGroup();
-
-        Option help = Option.builder("h")
-                .desc("Shows this help")
-                .longOpt("help")
-                .build();
-
-        Option version = Option.builder("v")
-                .desc("Print version number.")
-                .longOpt("version")
-                .build();
-
-        Option jsonConfigSchema = Option.builder("s")
-                .desc("Print json config schema.")
-                .longOpt("schema")
-                .build();
-
-        printOptionGroup.addOption(help);
-        printOptionGroup.addOption(version);
-        printOptionGroup.addOption(jsonConfigSchema);
-
+public class CliConfigOptions extends Options {
+    public CliConfigOptions() {
         Option websocketUri = Option.builder("w")
                 .desc("Connect over websocket to this URI. Default: " + ConfigField.websocketUri.getDefaultValue())
                 .hasArg()
@@ -54,7 +33,6 @@ public class CliOptions extends Options {
 
         this.addOption(websocketUri);
         this.addOption(config);
-        this.addOptionGroup(printOptionGroup);
         this.addOption(serverName);
     }
 }
