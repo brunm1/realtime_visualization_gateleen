@@ -3,7 +3,9 @@ package ch.bfh.ti.gapa.cli.config.reading.file;
 import ch.bfh.ti.gapa.cli.CliImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
 import ch.bfh.ti.gapa.cli.config.model.CliInput;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
+import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -16,13 +18,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Reads a configuration from a valid json file.
+ * Reads config from a valid json file.
  */
 public class ConfigFileReaderImpl implements ConfigFileReader {
     private static final Logger LOGGER = Logger.getLogger(ConfigFileReaderImpl.class.getName());
     private static final String CONFIG_FILE_NOT_FOUND = "Config file not found: ";
     private static final String COULD_NOT_BUILD_PATH_TO_CONFIG_FILE = "Could not build path to config file.";
     private static final String COULD_NOT_OPEN_CONFIG_FILE_INPUT_STREAM = "Could not open config file input stream.";
+    private static final String CONFIG_JSON = "config.json";
 
     private JsonConfigValidator configFileValidator;
     private JsonReader jsonReader;
@@ -38,11 +41,19 @@ public class ConfigFileReaderImpl implements ConfigFileReader {
     }
 
     /**
-     * @return the path to the config.json file in the same directory as the executed jar.
+     * Creates an instance with default dependencies.
+     */
+    public ConfigFileReaderImpl() {
+        this.configFileValidator = new JsonConfigValidatorImpl();
+        this.jsonReader = new JsonReaderImpl();
+    }
+
+    /**
+     * @return the path to the config file in the same directory as the executed jar.
      */
     private Path createDefaultConfigFilePath() {
         try {
-            return getPathToExecutedJar().getParent().resolve("config.json");
+            return getPathToExecutedJar().getParent().resolve(CONFIG_JSON);
         } catch (URISyntaxException e) {
             throw new RuntimeException(COULD_NOT_BUILD_PATH_TO_CONFIG_FILE, e);
         }

@@ -1,5 +1,10 @@
 package ch.bfh.ti.gapa.cli.exception;
 
+/**
+ * Defines exit codes with descriptions.
+ * If an exception happens in the cli application, the
+ * exception is wrapped and one of the following {@link CommandLineExceptionType} is added.
+ */
 public enum CommandLineExceptionType {
     INVALID_COMMAND_USAGE(5, "Invalid command usage."),
     UNRECOGNIZED_ARGUMENTS(6, "Could not recognize some arguments."),

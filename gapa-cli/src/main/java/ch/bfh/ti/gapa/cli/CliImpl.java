@@ -1,16 +1,12 @@
 package ch.bfh.ti.gapa.cli;
 
+import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
 import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReader;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.JsonReaderImpl;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidator;
-import ch.bfh.ti.gapa.cli.config.reading.file.json.validation.JsonConfigValidatorImpl;
-import ch.bfh.ti.gapa.cli.config.model.CliInput;
 import ch.bfh.ti.gapa.cli.exception.CommandLineException;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
 import ch.bfh.ti.gapa.cli.log.SlimFormatter;
@@ -18,9 +14,9 @@ import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInImpl;
 import ch.bfh.ti.gapa.process.SynchronizedTask;
-import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayer;
 import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerInput;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
@@ -28,7 +24,7 @@ import org.apache.commons.cli.ParseException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
-import java.util.logging.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -50,10 +46,10 @@ public class CliImpl implements Cli{
 
     /**
      * @param processLayer read config data is passed to the process layer
-     * @param configFileReader reads the default config file
+     * @param configFileReader reads the config file
      * @param commandLineArgumentsReader reads configuration from command line arguments
      * @param cliInputParser parses read config data
-     * @param infoPrinter prints data to stdout
+     * @param infoPrinter prints data
      * @param cliOptions contains allowed command line options
      * @param nonBlockingStdIn used to request input from the user
      */
@@ -76,24 +72,21 @@ public class CliImpl implements Cli{
      */
     public CliImpl() {
         ProcessLayer processLayer = new ProcessLayerImpl();
-        JsonConfigValidator jsonConfigValidator = new JsonConfigValidatorImpl();
-        JsonReader jsonReader = new JsonReaderImpl();
         CliInputParser cliInputParser = new CliInputParserImpl();
 
-        ConfigFileReader configFileReader = new ConfigFileReaderImpl(jsonConfigValidator, jsonReader);
+        ConfigFileReader configFileReader = new ConfigFileReaderImpl();
 
         CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl();
 
-        CliOptions cliOptions = new CliOptions();
-
-        InfoPrinter infoPrinter = new InfoPrinter(cliOptions);
+        CliOptions options = new CliOptions();
+        InfoPrinter infoPrinter = new InfoPrinter(options);
 
         this.processLayer = processLayer;
         this.configFileReader = configFileReader;
         this.commandLineArgumentsReader = commandLineArgumentsReader;
         this.cliInputParser = cliInputParser;
         this.infoPrinter = infoPrinter;
-        this.cliOptions = cliOptions;
+        this.cliOptions = options;
         this.nonBlockingStdIn = new NonBlockingStdInImpl();
         this.printer = System.out::println;
     }

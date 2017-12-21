@@ -4,6 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * This implementation allows to read asynchronously from StdIn.
+ * A new thread is started that checks every 20ms if a new line
+ * is ready to read. The read line is passed to {@link NonBlockingStdInHandler#onReadLine(String)}.
+ * The thread closes gracefully if {@link #close()} is called.
+ */
 public class NonBlockingStdInImpl implements NonBlockingStdIn {
     private volatile boolean closed;
 
@@ -32,6 +38,9 @@ public class NonBlockingStdInImpl implements NonBlockingStdIn {
         }).start();
     }
 
+    /**
+     * Stops reading from StdIn and shuts down extra thread.
+     */
     public void close() {
        closed=true;
     }

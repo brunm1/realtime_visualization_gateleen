@@ -1,8 +1,9 @@
 package ch.bfh.ti.gapa.cli.config.model;
 
 /**
- * Contains all config field names
+ * Contains all config fields
  * used for configuration.
+ * The default values are also given here.
  */
 public enum ConfigField {
     websocketUri("ws://localhost:7012"),

@@ -18,7 +18,7 @@ public class CliInputParserImpl implements CliInputParser {
 
     /**
      * Parses configuration values if necessary and writes them into {@link ProcessLayerInput}.
-     * @param cliInput Unparsed data collected from different sources
+     * @param cliInput Unparsed data collected from cli arguments and config files
      * @param processLayerInput Target {@link ProcessLayerInput} instance that will hold the parsed data
      * @throws CliInputParseException when a {@link ConfigField} cannot be parsed
      */

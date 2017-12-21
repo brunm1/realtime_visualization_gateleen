@@ -5,6 +5,7 @@ import ch.bfh.ti.gapa.cli.config.parsing.CliInputParser;
 import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReader;
 import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReader;
 import ch.bfh.ti.gapa.cli.exception.CommandLineExceptionType;
+import ch.bfh.ti.gapa.cli.log.SlimFormatter;
 import ch.bfh.ti.gapa.cli.printer.InfoPrinter;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
@@ -17,9 +18,11 @@ import org.junit.jupiter.api.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 /**
-If test fails, fix it and correct also documentation
+ * Tests the CLI implementation. Every exit code is verified.
+ * Dependencies are mocked.
  */
 class CliImplTest {
     private static ByteArrayOutputStream stdoutByteArrayOutputStream;
@@ -76,6 +79,9 @@ class CliImplTest {
 
     @BeforeAll
     static void beforeAll() {
+        //define err output format
+        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
+
         //mock output stream
         stdoutByteArrayOutputStream = new ByteArrayOutputStream();
         stderrByteArrayOutputStream = new ByteArrayOutputStream();

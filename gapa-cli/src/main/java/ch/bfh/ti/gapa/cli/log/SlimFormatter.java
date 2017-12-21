@@ -6,6 +6,12 @@ import java.time.Instant;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+/**
+ * Defines a one line format for log output.
+ * The timestamp is formatted as ISO-8601.
+ * The default format from {@link java.util.logging.SimpleFormatter} uses
+ * two lines per log record which is difficult to read.
+ */
 public class SlimFormatter extends Formatter {
     @Override
     public String format(LogRecord record) {
