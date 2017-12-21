@@ -4,6 +4,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 
+/**
+ * Contains the cli options to print out various
+ * data about the application.
+ */
 public class CliPrintOptions extends Options {
     public CliPrintOptions() {
         OptionGroup printOptionGroup = new OptionGroup();

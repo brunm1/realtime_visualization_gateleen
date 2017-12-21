@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
+/**
+ * Configures gapa specific parameters for the {@link InfoPrinterImpl}
+ * and adds the method {@link #printConfigSchema()} to print the
+ * json schema used to validate config data.
+ */
 public class GapaInfoPrinterImpl extends InfoPrinterImpl implements GapaInfoPrinter {
     private static final String CONFIG_SCHEMA_JSON_RESOURCE_PATH = "/config-schema.json";
     private static final int JSON_SCHEMA_INDENT_FACTOR = 2;
@@ -25,6 +30,10 @@ public class GapaInfoPrinterImpl extends InfoPrinterImpl implements GapaInfoPrin
                 GapaInfoPrinterImpl.class.getResourceAsStream(APP_PROPERTIES_RESOURCE_PATH));
     }
 
+    /**
+     * Loads the json schema and prints it.
+     * @throws IOException if schema cannot be loaded
+     */
     @Override
     public void printConfigSchema() throws IOException {
         try (InputStream inputStream = GapaInfoPrinterImpl.class.getResourceAsStream(CONFIG_SCHEMA_JSON_RESOURCE_PATH)) {
