@@ -9,6 +9,9 @@ import java.io.PrintWriter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Verifies if the print method outputs data.
+ */
 class GapaInfoPrinterImplTest {
 
     /**

@@ -9,6 +9,10 @@ import java.nio.charset.Charset;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Tests if the {@link NonBlockingInputStream} returns
+ * the same data that was input and if the exceptions are propagated correctly.
+ */
 class NonBlockingInputStreamImplTest {
 
     @Test

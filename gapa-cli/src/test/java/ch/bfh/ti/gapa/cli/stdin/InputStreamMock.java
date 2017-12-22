@@ -2,6 +2,9 @@ package ch.bfh.ti.gapa.cli.stdin;
 
 import java.io.InputStream;
 
+/**
+ * A valid InputStream implementation for {@link NonBlockingInputStream}.
+ */
 public class InputStreamMock extends InputStream{
     private byte[] bytes;
 

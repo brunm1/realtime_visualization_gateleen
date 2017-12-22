@@ -3,15 +3,18 @@ It connects to a communication gateway over websocket,
 receives communication data, filters it and outputs PlantUml.
 Filters can be configured with a json config file.
 
-usage: java -jar /path/to/gapa.jar <options>
+usage: java -jar /path/to/gapa.jar [-h | -s | -v]
+ -h,--help      Shows this help
+ -s,--schema    Print json config schema.
+ -v,--version   Print version number.
+
+or
+
+usage: java -jar /path/to/gapa.jar [-c <path>] [-n <name>] [-w <uri>]
  -c,--config <path>        Set the path to config file. Default: path to
-                           config.json in the same directory as executed
-                           jar
- -h,--help                 Shows this help
- -n,--server-name <name>   Name of the central server that receives and
-                           sends requests. Default: gateway
- -s,--schema               Print json config schema.
- -v,--version              Print version number.
+                           config.json in the same directory as executed jar
+ -n,--server-name <name>   Name of the central server that receives and sends
+                           requests. Default: gateway
  -w,--websocket <uri>      Connect over websocket to this URI. Default:
                            ws://localhost:7012
 

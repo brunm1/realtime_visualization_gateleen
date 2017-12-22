@@ -12,6 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.nio.charset.Charset;
 
+/**
+ * Verifies the output of the {@link InfoPrinterImpl} when
+ * dummy input is provided.
+ */
 class InfoPrinterImplTest {
     private static InfoPrinter infoPrinter;
     private static PrintWriter pw;

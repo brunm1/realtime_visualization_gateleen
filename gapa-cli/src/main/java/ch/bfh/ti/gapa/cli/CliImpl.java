@@ -43,18 +43,22 @@ public class CliImpl implements Cli{
     public static void main(String[] args) {
         //configure custom log format
         Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
-        Cli cli = new CliImpl(
-                new ProcessLayerImpl(),
-                new ConfigFileReaderImpl(),
-                new CommandLineArgumentsReaderImpl(),
-                new CliInputParserImpl(),
-                new GapaInfoPrinterImpl(new PrintWriter(System.out)),
-                new CliConfigOptions(),
-                new NonBlockingInputStreamImpl(),
-                System.out::println, new CliPrintOptions()
-        );
-        int exitCode = cli.run(args);
 
+        int exitCode;
+        try(PrintWriter printWriter = new PrintWriter(System.out, true)) {
+            Cli cli = new CliImpl(
+                    new ProcessLayerImpl(),
+                    new ConfigFileReaderImpl(),
+                    new CommandLineArgumentsReaderImpl(),
+                    new CliInputParserImpl(),
+                    new GapaInfoPrinterImpl(printWriter),
+                    new CliConfigOptions(),
+                    new NonBlockingInputStreamImpl(),
+                    System.out::println, new CliPrintOptions()
+            );
+
+            exitCode = cli.run(args);
+        }
         System.exit(exitCode);
     }
 
