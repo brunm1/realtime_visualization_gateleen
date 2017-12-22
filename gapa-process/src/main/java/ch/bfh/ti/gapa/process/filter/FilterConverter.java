@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * Contains the converter methods to convert JSONArray to a List of Filters and to call the right constructor based on the attribute type in a JSONObject
+ */
 public class FilterConverter {
     private static Schema schema;
 
@@ -21,6 +24,11 @@ public class FilterConverter {
         schema = SchemaLoader.load(o);
     }
 
+    /**
+     * Converts a JSONArray defining filters to a List of filters
+     * @param jsonArray JSONArray defining the filters
+     * @return A List containing the filters
+     */
     public static List<Predicate<Record>> convert(JSONArray jsonArray) {
         schema.validate(jsonArray);
 
@@ -31,6 +39,12 @@ public class FilterConverter {
         return filters;
     }
 
+    /**
+     * Creates a filter from the JSONObject defining the filter.
+     * Internally calls the constructor of the corresponding filter type based on the attribute type.
+     * @param filterJson JSONObject defining the Filter
+     * @return a Filter (of Type Predicate<Record>)
+     */
     public static Predicate<Record>  convertToFilter(JSONObject filterJson) {
         switch (filterJson.getString("type")) {
             case "genericRegexFilter":

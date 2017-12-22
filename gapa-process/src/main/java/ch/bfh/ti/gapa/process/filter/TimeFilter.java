@@ -14,6 +14,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.function.Predicate;
 
+/**
+ * A Filter that returns true if a record was sent before/after (depending on the configuration) the specified time.
+ */
 public class TimeFilter implements Predicate<Record> {
     private final static Schema schema;
     String name;
@@ -32,6 +35,10 @@ public class TimeFilter implements Predicate<Record> {
         schema = SchemaLoader.load(o);
     }
 
+    /**
+     * Creates a new TimeFilter from a JSONObject
+     * @param filterJson JSONObject defining the filter.
+     */
     TimeFilter(JSONObject filterJson) {
         try {
             schema.validate(filterJson);
@@ -48,6 +55,11 @@ public class TimeFilter implements Predicate<Record> {
         }
     }
 
+    /**
+     * Applies the Filter to a given record
+     * @param record Record to test
+     * @return returns true if a record was sent before/after (depending on the configuration) the specified time
+     */
     @Override
     public boolean test(Record record) {
         if(before) {

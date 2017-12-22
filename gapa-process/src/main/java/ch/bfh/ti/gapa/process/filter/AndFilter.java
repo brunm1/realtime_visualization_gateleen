@@ -12,6 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * Filter that consists of a List of filters. It returns true if all filters return true.
+ */
 public class AndFilter implements Predicate<Record> {
     List<Predicate<Record>> filters;
     String name;
@@ -29,12 +32,21 @@ public class AndFilter implements Predicate<Record> {
         schema = SchemaLoader.load(o);
     }
 
+    /**
+     * Creates a new AndFilter from a JSONObject
+     * @param filterJson JSONObject defining the filter.
+     */
     public AndFilter(JSONObject filterJson) {
         schema.validate(filterJson);
         name = filterJson.optString("name", "");
         filters = FilterConverter.convert(filterJson.getJSONArray("filters"));
     }
 
+    /**
+     * Applies the Filter to a given record
+     * @param record Record to test
+     * @return true if the record passes all filters in the list of filters
+     */
     @Override
     public boolean test(Record record) {
         Iterator<Predicate<Record>> it = filters.iterator();
