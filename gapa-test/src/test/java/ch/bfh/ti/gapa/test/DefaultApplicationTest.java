@@ -29,9 +29,10 @@ class DefaultApplicationTest extends ApplicationTest{
         //expect exit code to be 0
         Assertions.assertEquals(0, out.getExitCode());
 
+        String actualPlantUml = out.getStdOut();
         //expect output to be the expected plantuml
         String expectedPlantUml = ResourceReader.readStringFromResource("/expected.plantuml");
-        Assertions.assertEquals(expectedPlantUml, out.getStdOut());
+        Assertions.assertEquals(expectedPlantUml, actualPlantUml, "If not the same, generate new plantuml for test resources and render svg and check if it is correct.");
 
         if(runJar) {
             //Check stderr output
@@ -43,24 +44,16 @@ class DefaultApplicationTest extends ApplicationTest{
         }
         //TODO implement a way to specifically verify log output of cli module when not run as a jar.
 
-
-
         //It is possible that the plantuml output cannot be rendered.
         //PlantUml has no usable API to check plantUml Syntax, so we check if the
-        //generated svg is the same as a valid svg we checked ourselves.
-        String expectedSvg = ResourceReader.readStringFromResource("/expected.svg");
+        //generated svg doesn't contain a specific error string
 
         //We collect the bytes of the output in an in-memory byte array
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        new SequenceDiagramGenerator().exportPlantUmlAsSvg(expectedPlantUml,byteArrayOutputStream);
+        new SequenceDiagramGenerator().exportPlantUmlAsSvg(actualPlantUml,byteArrayOutputStream);
         //convert bytes to string
         String actualSvg = byteArrayOutputStream.toString("utf8");
 
-        //Use following code to copy svg to resources.
-        //Check if svg can be rendered in browser!
-//        FileOutputStream outputStream = new FileOutputStream(new File(this.getClass().getResource("/expected.svg").getFile()));
-//        outputStream.write(actualSvg.getBytes());
-
-        Assertions.assertEquals(expectedSvg, actualSvg);
+        Assertions.assertFalse(actualSvg.contains(">Syntax Error?</text>"), "Svg should not contain a syntax error message.");
     }
 }

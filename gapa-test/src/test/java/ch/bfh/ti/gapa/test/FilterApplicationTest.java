@@ -56,26 +56,15 @@ public class FilterApplicationTest extends ApplicationTest {
         String[] logLines = out.getStdErr().split("\n");
         Assertions.assertEquals(1, logLines.length);
 
-        Assertions.assertEquals(expectedPlantUml, out.getStdOut());
-
-
-
-        //It is possible that the plantuml output cannot be rendered.
-        //PlantUml has no usable API to check plantUml Syntax, so we check if the
-        //generated svg is the same as a valid svg we checked ourselves.
-        String expectedSvg = ResourceReader.readStringFromResource("/expected.svg");
+        String actualPlantUml = out.getStdOut();
+        Assertions.assertEquals(expectedPlantUml, actualPlantUml);
 
         //We collect the bytes of the output in an in-memory byte array
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        new SequenceDiagramGenerator().exportPlantUmlAsSvg(expectedPlantUml,byteArrayOutputStream);
+        new SequenceDiagramGenerator().exportPlantUmlAsSvg(actualPlantUml,byteArrayOutputStream);
         //convert bytes to string
         String actualSvg = byteArrayOutputStream.toString("utf8");
 
-        //Use following code to copy svg to resources.
-        //Check if svg can be rendered in browser!
-//        FileOutputStream outputStream = new FileOutputStream(new File(this.getClass().getResource("/expected.svg").getFile()));
-//        outputStream.write(actualSvg.getBytes());
-
-//        Assertions.assertEquals(expectedSvg, actualSvg); //ToDo
+        Assertions.assertFalse(actualSvg.contains(">Syntax Error?</text>"), "Svg should not contain a syntax error message.");
     }
 }
