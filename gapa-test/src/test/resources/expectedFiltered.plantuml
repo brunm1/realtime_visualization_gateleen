@@ -1,4 +1,3 @@
-Opened connection
 @startuml
-mars -> gateleen : /gateleen/server/test/foo/bar
+mars -> gateway : GET /gateleen/server/test/foo/bar
 @enduml

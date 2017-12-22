@@ -54,19 +54,7 @@ public class FilterApplicationTest extends ApplicationTest {
         String expectedPlantUml = ResourceReader.readStringFromResource("/expectedFiltered.plantuml");
 
         String[] logLines = out.getStdErr().split("\n");
-
-        if(runJar) {
-
-            //Check stderr output
-            Assertions.assertEquals(2, logLines.length);
-
-            //expect opened connection
-//            Assertions.assertTrue(logLines[1].contains("Opened connection"));
-        } else {
-//            Assertions.assertEquals(2, logLines.length);
-            expectedPlantUml = expectedPlantUml.split("\n", 2)[1] ;
-//            Assertions.assertTrue(logLines[1].contains("Opened connection"));
-        }
+        Assertions.assertEquals(1, logLines.length);
 
         Assertions.assertEquals(expectedPlantUml, out.getStdOut());
 
