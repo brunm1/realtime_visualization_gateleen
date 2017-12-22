@@ -36,6 +36,32 @@ import java.util.stream.Collectors;
  * passes the configuration to the process layer.
  */
 public class CliImpl implements Cli{
+    /**
+     * Runs the CLI with the given arguments and exits the application with an exit code.
+     * @param args Command line arguments
+     */
+    public static void main(String[] args) {
+        //configure custom log format
+        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
+        Cli cli = new CliImpl(
+                new ProcessLayerImpl(),
+                new ConfigFileReaderImpl(),
+                new CommandLineArgumentsReaderImpl(),
+                new CliInputParserImpl(),
+                new GapaInfoPrinterImpl(new PrintWriter(System.out)),
+                new CliConfigOptions(),
+                new NonBlockingInputStreamImpl(),
+                System.out::println, new CliPrintOptions()
+        );
+        int exitCode = cli.run(args);
+
+        System.exit(exitCode);
+    }
+
+    public ProcessLayer getProcessLayer() {
+        return processLayer;
+    }
+
     private static final Logger LOGGER = Logger.getLogger(CliImpl.class.getName());
 
     private ProcessLayer processLayer;
