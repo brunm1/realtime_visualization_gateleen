@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class FilterApplicationTest extends ApplicationTest {
     @Override
-    void test() throws IOException, InterruptedException {
+    void test() throws Throwable {
         List<String> mockServerArgs = new ArrayList<>();
         mockServerArgs.add("-c");
         mockServerArgs.add("./src/test/resources/filterConfig.json");
