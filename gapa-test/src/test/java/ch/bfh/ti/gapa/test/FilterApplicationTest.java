@@ -6,7 +6,6 @@ import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +51,6 @@ public class FilterApplicationTest extends ApplicationTest {
 
         //expect output to be the expected plantuml
         String expectedPlantUml = ResourceReader.readStringFromResource("/expectedFiltered.plantuml");
-
-        String[] logLines = out.getStdErr().split("\n");
-        Assertions.assertEquals(1, logLines.length);
 
         String actualPlantUml = out.getStdOut();
         Assertions.assertEquals(expectedPlantUml, actualPlantUml);
