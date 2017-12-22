@@ -1,0 +1,4 @@
+Opened connection
+@startuml
+mars -> gateleen : /gateleen/server/test/foo/bar
+@enduml
