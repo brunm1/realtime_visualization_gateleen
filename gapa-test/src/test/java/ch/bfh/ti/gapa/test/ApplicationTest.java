@@ -1,22 +1,32 @@
 package ch.bfh.ti.gapa.test;
 
 import ch.bfh.ti.gapa.cli.CliImpl;
+import ch.bfh.ti.gapa.cli.config.CliConfigOptions;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.log.SlimFormatter;
+import ch.bfh.ti.gapa.cli.printer.CliPrintOptions;
+import ch.bfh.ti.gapa.cli.printer.GapaInfoPrinterImpl;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStream;
 import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamHandler;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamImpl;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
 import ch.bfh.ti.gapa.process.reader.StringFromInputStreamReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
@@ -68,7 +78,22 @@ abstract class ApplicationTest {
     }
 
     private void runInSameJVM(List<String> args) {
-        CliImpl cli = new CliImpl();
+        CliImpl cli = new CliImpl(
+                new ProcessLayerImpl(),
+                new ConfigFileReaderImpl(),
+                new CommandLineArgumentsReaderImpl(),
+                new CliInputParserImpl(),
+                new GapaInfoPrinterImpl(new PrintWriter(System.out)),
+                new CliConfigOptions(),
+                new NonBlockingInputStreamImpl(),
+                new Consumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        System.out.println(s);
+                    }
+                }, new CliPrintOptions()
+        );
+
         countDownLatch = new CountDownLatch(1);
         cli.setPrinter(s->virtualCliOutput=s+"\n");
         cli.setNonBlockingInputStream(new NonBlockingInputStream() {

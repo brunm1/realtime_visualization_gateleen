@@ -1,9 +1,18 @@
 package ch.bfh.ti.gapa.playground;
 
+import ch.bfh.ti.gapa.cli.Cli;
 import ch.bfh.ti.gapa.cli.CliImpl;
+import ch.bfh.ti.gapa.cli.config.CliConfigOptions;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
+import ch.bfh.ti.gapa.cli.printer.CliPrintOptions;
+import ch.bfh.ti.gapa.cli.printer.GapaInfoPrinterImpl;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamImpl;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
 import ch.bfh.ti.gapa.integration.server.converter.GapaMessageToJsonConverter;
 import ch.bfh.ti.gapa.integration.server.converter.JsonSender;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
@@ -11,8 +20,10 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.ServerWebSocket;
 import org.junit.jupiter.api.Test;
 
+import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class ServerClientExample {
 
@@ -58,7 +69,21 @@ public class ServerClientExample {
                 e.printStackTrace();
             }
 
-            CliImpl cliImpl = new CliImpl();
+            Cli cli = new CliImpl(
+                    new ProcessLayerImpl(),
+                    new ConfigFileReaderImpl(),
+                    new CommandLineArgumentsReaderImpl(),
+                    new CliInputParserImpl(),
+                    new GapaInfoPrinterImpl(new PrintWriter(System.out)),
+                    new CliConfigOptions(),
+                    new NonBlockingInputStreamImpl(),
+                    new Consumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            System.out.println(s);
+                        }
+                    }, new CliPrintOptions()
+            );
 
             //TODO fix?
 //            InputSupplier inputSupplierMock = () -> {
@@ -72,7 +97,7 @@ public class ServerClientExample {
 //            cliImpl.setInputSupplier(inputSupplierMock);
 
             System.out.println("Start cliImpl with no arguments");
-            int exitCode = cliImpl.run(new String[]{"-w", "http://localhost:7020", "-c", "/home/marc/Documents/visualization_gateleen/gapa-playground/src/main/resources/sample-config.json"});
+            int exitCode = cli.run(new String[]{"-w", "http://localhost:7020", "-c", "/home/marc/Documents/visualization_gateleen/gapa-playground/src/main/resources/sample-config.json"});
 
             System.out.println("CliImpl exited with " + exitCode);
         }).start();

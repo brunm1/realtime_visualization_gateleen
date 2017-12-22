@@ -17,5 +17,5 @@ public interface CliInputParser {
      * @param processLayerInput Target {@link ProcessLayerInput} instance that will hold the parsed data
      * @throws CliInputParseException when a {@link ConfigField} cannot be parsed
      */
-    void parse(CliInput cliInput, ProcessLayerInput processLayerInput) throws CliInputParseException;
+    void parse(CliInput cliInput, ProcessLayerInput processLayerInput) throws Throwable;
 }

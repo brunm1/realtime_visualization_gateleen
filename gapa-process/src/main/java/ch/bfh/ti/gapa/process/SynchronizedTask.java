@@ -35,14 +35,13 @@ public class SynchronizedTask<T, K> {
         //TODO possible race condition: errorRef can be overwritten from different thread after this thread
         //was interrupted with outsideExceptionInterrupts
         if(errorRef.get() != null) {
-            errorRef.get().printStackTrace();
             throw errorRef.get();
         } else {
             return resultRef.get();
         }
     }
 
-    private void runAsyncTask(K input) {
+    private void runAsyncTask(K input) throws Throwable {
         asyncTask.run(input, new AsyncTaskHandler<T>() {
             @Override
             public void onResult(T result) {

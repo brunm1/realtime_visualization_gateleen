@@ -14,5 +14,5 @@ public interface CommandLineArgumentsReader {
      * @param cliInput Read data is written into this instance.
      * @param commandLine Contains command line arguments
      */
-    void read(CliInput cliInput, CommandLine commandLine);
+    void read(CliInput cliInput, CommandLine commandLine) throws Throwable;
 }

@@ -73,33 +73,6 @@ public class CliImpl implements Cli{
         this.cliPrintOptions = cliPrintOptions;
     }
 
-    /**
-     * Create CliImpl with default dependencies
-     */
-    public CliImpl() {
-        ProcessLayer processLayer = new ProcessLayerImpl();
-        CliInputParser cliInputParser = new CliInputParserImpl();
-
-        ConfigFileReader configFileReader = new ConfigFileReaderImpl();
-
-        CommandLineArgumentsReaderImpl commandLineArgumentsReader = new CommandLineArgumentsReaderImpl();
-
-        CliConfigOptions cliConfigOptions = new CliConfigOptions();
-        CliPrintOptions cliPrintOptions = new CliPrintOptions();
-
-        GapaInfoPrinter infoPrinter = new GapaInfoPrinterImpl(new PrintWriter(System.out));
-
-        this.processLayer = processLayer;
-        this.configFileReader = configFileReader;
-        this.commandLineArgumentsReader = commandLineArgumentsReader;
-        this.cliInputParser = cliInputParser;
-        this.infoPrinter = infoPrinter;
-        this.cliConfigOptions = cliConfigOptions;
-        this.nonBlockingInputStream = new NonBlockingInputStreamImpl();
-        this.cliPrintOptions = cliPrintOptions;
-        this.printer = System.out::println;
-    }
-
     private void throwOnUnrecognizedOptions(CommandLine commandLine) throws CommandLineException {
         if (commandLine.getArgs().length > 0) {
             Exception e = new Exception("Unrecognized arguments: " + commandLine.getArgList()
@@ -218,76 +191,28 @@ public class CliImpl implements Cli{
         return synchronizedTask.run(processLayerInput, runAfter);
     }
 
-    /**
-     * Runs the CLI with the given arguments and exits the application with an exit code.
-     * @param args Command line arguments
-     */
-    public static void main(String[] args) {
-        //configure custom log format
-        Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
-        int exitCode = new CliImpl().run(args);
-
-        System.exit(exitCode);
-    }
-
-    public ProcessLayer getProcessLayer() {
-        return processLayer;
-    }
-
     public void setProcessLayer(ProcessLayer processLayer) {
         this.processLayer = processLayer;
-    }
-
-    public ConfigFileReader getConfigFileReader() {
-        return configFileReader;
     }
 
     public void setConfigFileReader(ConfigFileReader configFileReader) {
         this.configFileReader = configFileReader;
     }
 
-    public CommandLineArgumentsReader getCommandLineArgumentsReader() {
-        return commandLineArgumentsReader;
-    }
-
     public void setCommandLineArgumentsReader(CommandLineArgumentsReader commandLineArgumentsReader) {
         this.commandLineArgumentsReader = commandLineArgumentsReader;
-    }
-
-    public CliInputParser getCliInputParser() {
-        return cliInputParser;
     }
 
     public void setCliInputParser(CliInputParser cliInputParser) {
         this.cliInputParser = cliInputParser;
     }
 
-    public GapaInfoPrinter getInfoPrinter() {
-        return infoPrinter;
-    }
-
     public void setInfoPrinter(GapaInfoPrinter infoPrinter) {
         this.infoPrinter = infoPrinter;
     }
 
-    public CliConfigOptions getCliConfigOptions() {
-        return cliConfigOptions;
-    }
-
-    public void setCliConfigOptions(CliConfigOptions cliConfigOptions) {
-        this.cliConfigOptions = cliConfigOptions;
-    }
-
-    public NonBlockingInputStream getNonBlockingInputStream() {
-        return nonBlockingInputStream;
-    }
-
     public void setNonBlockingInputStream(NonBlockingInputStream nonBlockingInputStream) {
         this.nonBlockingInputStream = nonBlockingInputStream;
-    }
-
-    public Consumer<String> getPrinter() {
-        return printer;
     }
 
     public void setPrinter(Consumer<String> printer) {
