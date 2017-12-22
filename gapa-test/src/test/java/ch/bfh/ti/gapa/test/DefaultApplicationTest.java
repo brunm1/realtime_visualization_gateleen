@@ -3,12 +3,8 @@ package ch.bfh.ti.gapa.test;
 import ch.bfh.ti.gapa.process.diagram.SequenceDiagramGenerator;
 import ch.bfh.ti.gapa.process.resources.ResourceReader;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 class DefaultApplicationTest extends ApplicationTest{
@@ -20,7 +16,7 @@ class DefaultApplicationTest extends ApplicationTest{
      * if the resulting PlantUml can be rendered as SVG.
      */
     @Override
-    void test() throws IOException, InterruptedException {
+    void test() throws Throwable {
         connectGapaWithMockServer(new ArrayList<>());
 
         sendSampleMessagesToGapa();

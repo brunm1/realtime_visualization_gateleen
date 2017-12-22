@@ -13,9 +13,9 @@ public interface CliInputParser {
 
     /**
      * Parses data from {@link CliInput} and saves it in {@link ProcessLayerInput}
-     * @param cliInput Unparsed data collected from different sources
+     * @param cliInput Unparsed data collected from cli arguments or config files
      * @param processLayerInput Target {@link ProcessLayerInput} instance that will hold the parsed data
      * @throws CliInputParseException when a {@link ConfigField} cannot be parsed
      */
-    void parse(CliInput cliInput, ProcessLayerInput processLayerInput) throws CliInputParseException;
+    void parse(CliInput cliInput, ProcessLayerInput processLayerInput) throws Throwable;
 }

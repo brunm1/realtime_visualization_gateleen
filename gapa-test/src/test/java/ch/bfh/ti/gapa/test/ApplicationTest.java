@@ -1,22 +1,32 @@
 package ch.bfh.ti.gapa.test;
 
 import ch.bfh.ti.gapa.cli.CliImpl;
+import ch.bfh.ti.gapa.cli.config.CliConfigOptions;
+import ch.bfh.ti.gapa.cli.config.parsing.CliInputParserImpl;
+import ch.bfh.ti.gapa.cli.config.reading.commandline.CommandLineArgumentsReaderImpl;
+import ch.bfh.ti.gapa.cli.config.reading.file.ConfigFileReaderImpl;
 import ch.bfh.ti.gapa.cli.log.SlimFormatter;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdIn;
-import ch.bfh.ti.gapa.cli.stdin.NonBlockingStdInHandler;
+import ch.bfh.ti.gapa.cli.printer.CliPrintOptions;
+import ch.bfh.ti.gapa.cli.printer.GapaInfoPrinterImpl;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStream;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamHandler;
+import ch.bfh.ti.gapa.cli.stdin.NonBlockingInputStreamImpl;
 import ch.bfh.ti.gapa.integration.model.GapaMessage;
+import ch.bfh.ti.gapa.process.interfaces.ProcessLayerImpl;
 import ch.bfh.ti.gapa.process.reader.StringFromInputStreamReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +42,7 @@ abstract class ApplicationTest {
 
     private int virtualExitCode;
     private String virtualCliOutput;
-    private NonBlockingStdInHandler nonBlockingStdInHandler;
+    private NonBlockingInputStreamHandler nonBlockingInputStreamHandler;
     private CountDownLatch countDownLatch;
 
     /**
@@ -68,13 +78,28 @@ abstract class ApplicationTest {
     }
 
     private void runInSameJVM(List<String> args) {
-        CliImpl cli = new CliImpl();
+        CliImpl cli = new CliImpl(
+                new ProcessLayerImpl(),
+                new ConfigFileReaderImpl(),
+                new CommandLineArgumentsReaderImpl(),
+                new CliInputParserImpl(),
+                new GapaInfoPrinterImpl(new PrintWriter(System.out)),
+                new CliConfigOptions(),
+                new NonBlockingInputStreamImpl(),
+                new Consumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        System.out.println(s);
+                    }
+                }, new CliPrintOptions()
+        );
+
         countDownLatch = new CountDownLatch(1);
         cli.setPrinter(s->virtualCliOutput=s+"\n");
-        cli.setNonBlockingStdIn(new NonBlockingStdIn() {
+        cli.setNonBlockingInputStream(new NonBlockingInputStream() {
             @Override
-            public void start(NonBlockingStdInHandler nonBlockingStdInHandler) {
-                ApplicationTest.this.nonBlockingStdInHandler = nonBlockingStdInHandler;
+            public void start(InputStream in, NonBlockingInputStreamHandler nonBlockingInputStreamHandler) {
+                ApplicationTest.this.nonBlockingInputStreamHandler = nonBlockingInputStreamHandler;
             }
 
             @Override
@@ -116,7 +141,7 @@ abstract class ApplicationTest {
      * Sends the Enter key stroke to the gapa process.
      * @throws IOException can be raised on sending the key stroke.
      */
-    private void simulateUserInput() throws IOException {
+    private void simulateUserInput() throws Throwable {
         //The recording has to be terminated by the user by typing in arbitrary input
         //E.g. 10 for enter key
 
@@ -124,7 +149,7 @@ abstract class ApplicationTest {
             process.getOutputStream().write(10);
             process.getOutputStream().close();
         } else {
-            nonBlockingStdInHandler.onReadLine("\n");
+            nonBlockingInputStreamHandler.onReadLine("\n");
         }
     }
 
@@ -180,7 +205,7 @@ abstract class ApplicationTest {
      * @throws IOException when reading of stdout or stderr fails
      * @throws InterruptedException when gapa process was interrupted
      */
-    ProcessOutput getProcessOutput() throws IOException, InterruptedException {
+    ProcessOutput getProcessOutput() throws Throwable {
         //terminates recording
         simulateUserInput();
 
@@ -237,16 +262,16 @@ abstract class ApplicationTest {
         serverMock.sendGapaMessages(messages);
     }
 
-    abstract void test() throws Exception;
+    abstract void test() throws Throwable;
 
     @Test
-    public void testJar() throws Exception {
+    public void testJar() throws Throwable {
         runJar=true;
         test();
     }
 
     @Test
-    public void testInSameJvm() throws Exception {
+    public void testInSameJvm() throws Throwable {
         Logger.getGlobal().getParent().getHandlers()[0].setFormatter(new SlimFormatter());
 
         runJar=false;

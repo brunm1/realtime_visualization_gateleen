@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SynchronizedTask<T, K> {
     private AsyncTask<T, K> asyncTask;
+    private Thread creatingThread;
 
     private CountDownLatch countDownLatch;
     private AtomicReference<Throwable> errorRef = new AtomicReference<>();
@@ -12,25 +13,35 @@ public class SynchronizedTask<T, K> {
 
     public SynchronizedTask(AsyncTask<T, K> asyncTask) {
         this.asyncTask = asyncTask;
+        creatingThread = Thread.currentThread();
     }
+
+    public void outsideExceptionInterrupts(Throwable t) {
+        errorRef.set(t);
+        creatingThread.interrupt();
+    }
+
 
     private T waitForResult() throws Throwable{
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //occurs when outsideExceptionInterrupts was called.
+            //We don't wait for the result from the other thread and
+            //throw immediately.
         }
 
         //throw ex if there was one
+        //TODO possible race condition: errorRef can be overwritten from different thread after this thread
+        //was interrupted with outsideExceptionInterrupts
         if(errorRef.get() != null) {
-            errorRef.get().printStackTrace();
             throw errorRef.get();
         } else {
             return resultRef.get();
         }
     }
 
-    private void runAsyncTask(K input) {
+    private void runAsyncTask(K input) throws Throwable {
         asyncTask.run(input, new AsyncTaskHandler<T>() {
             @Override
             public void onResult(T result) {

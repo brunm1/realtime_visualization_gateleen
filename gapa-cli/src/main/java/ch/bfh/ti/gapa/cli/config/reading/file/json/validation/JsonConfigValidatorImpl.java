@@ -31,7 +31,7 @@ public class JsonConfigValidatorImpl implements JsonConfigValidator {
         try {
             return new JSONObject(new JSONTokener(jsonInputStream));
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Could not convert config file content into json object.", e);
+            throw new IllegalArgumentException("Could not convert config into json object.", e);
         }
     }
 
@@ -48,7 +48,7 @@ public class JsonConfigValidatorImpl implements JsonConfigValidator {
         try {
             schema.validate(jsonObject);
         } catch (ValidationException e) {
-            throw new IllegalArgumentException("Validation of config file failed.", e);
+            throw new IllegalArgumentException("Validation of config json failed.", e);
         }
         return jsonObject;
     }

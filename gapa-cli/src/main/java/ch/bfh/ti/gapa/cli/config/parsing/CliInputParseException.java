@@ -1,6 +1,7 @@
 package ch.bfh.ti.gapa.cli.config.parsing;
 
 import ch.bfh.ti.gapa.cli.config.model.ConfigField;
+import ch.bfh.ti.gapa.cli.printer.InfoPrinterImpl;
 
 /**
  * Depicts an exception thrown when parsing a field.
@@ -17,7 +18,7 @@ public class CliInputParseException extends Throwable{
     }
 
     /**
-     * Used by {@link ch.bfh.ti.gapa.cli.printer.InfoPrinter} to print the exception.
+     * Used by {@link InfoPrinterImpl} to print the exception.
      * @return a Message describing the exception.
      */
     @Override

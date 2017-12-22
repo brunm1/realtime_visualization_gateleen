@@ -12,7 +12,8 @@ public class JsonReaderImpl implements JsonReader {
     /**
      * Creates an instance of {@link CliInput} and copies data from a {@link JSONObject} to this instance.
      * The websocketUri and serverName are read as string.
-     * The filters are optional and are read as {@link org.json.JSONArray}.
+     * The filters are read as {@link org.json.JSONArray}.
+     * All fields are optional.
      */
     public void read(CliInput cliInput, JSONObject jsonObject) {
         cliInput.setWebsocketUri(jsonObject.optString(ConfigField.websocketUri.name()));

@@ -3,10 +3,8 @@ package ch.bfh.ti.gapa.cli.config.model;
 import org.json.JSONArray;
 
 /**
- * Read configuration data is saved here.
- * Is used as an intermediary type so that
- * the config data can be overwritten if several
- * config sources are used.
+ * Contains user input. Either from cli arguments
+ * or config files.
  */
 public class CliInput {
     private String websocketUri;

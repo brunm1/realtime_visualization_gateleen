@@ -1,5 +1,9 @@
 package ch.bfh.ti.gapa.cli.exception;
 
+/**
+ * If an exception occurs while running the CLI application,
+ * the exception is wrapped and a {@link CommandLineExceptionType} is added.
+ */
 public class CommandLineException extends Throwable {
     private CommandLineExceptionType commandLineExceptionType;
     private Throwable throwable;
@@ -13,6 +17,9 @@ public class CommandLineException extends Throwable {
         return commandLineExceptionType;
     }
 
+    /**
+     * @return the wrapped exception
+     */
     public Throwable getThrowable() {
         return throwable;
     }
