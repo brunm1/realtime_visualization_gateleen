@@ -13,6 +13,7 @@
         <module>gapa-playground</module>
         <module>gapa-test</module>
         <module>gapa-integration</module>
+        <module>gapa-demo</module>
     </modules>
 
     <scm>
