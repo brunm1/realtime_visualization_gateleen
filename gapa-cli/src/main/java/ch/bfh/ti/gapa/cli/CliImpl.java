@@ -146,7 +146,7 @@ public class CliImpl implements Cli{
                         }
                     }
                 } else {
-                    // Try to parse conig options
+                    // Try to parse config options
                     commandLine = defaultParser.parse(cliConfigOptions, args);
                     throwOnUnrecognizedOptions(commandLine);
 

@@ -54,9 +54,9 @@ class NonBlockingInputStreamImplTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         RuntimeException e = new RuntimeException(
-            "Sum Ting Wong\n" +
-            "Wi Tu Lo\n"+
-            "Ho Lee Fuk\n"+
+            "Sum Ting Wong" + System.lineSeparator() +
+            "Wi Tu Lo"+ System.lineSeparator() +
+            "Ho Lee Fuk"+ System.lineSeparator() +
             "Bang Ding Ow"
         );
 

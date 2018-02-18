@@ -36,7 +36,7 @@ class DefaultApplicationTest extends ApplicationTest{
 
         if(runJar) {
             //Check stderr output
-            String[] logLines = out.getStdErr().split("\n");
+            String[] logLines = out.getStdErr().split(System.lineSeparator());
             Assertions.assertEquals(1, logLines.length);
 
             //expect opened connection

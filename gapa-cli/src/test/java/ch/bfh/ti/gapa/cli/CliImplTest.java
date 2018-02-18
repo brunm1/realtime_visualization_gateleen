@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -225,7 +226,8 @@ class CliImplTest {
             @Override
             public void readConfigFile(CliInput cliInput, Path configFilePath) {
                 readConfigFileCalled.set(true);
-                Assertions.assertEquals(pathToConfigFile, configFilePath.toString());
+                Path p = Paths.get(pathToConfigFile);
+                Assertions.assertEquals(p, configFilePath);
             }
         });
 

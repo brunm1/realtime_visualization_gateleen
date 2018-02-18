@@ -25,9 +25,9 @@ class SequenceDiagramGeneratorTest {
 
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();
         String result = sequenceDiagramGenerator.generatePlantUmlSequenceDiagram(messages);
-        assertEquals("@startuml\n" +
-                "Spaceship -> Houston : We have a problem\n" +
-                "\"/]{}à£è/&(/%\" -> \"What?\" : ////>>>\n" +
+        assertEquals("@startuml" + System.lineSeparator() +
+                "Spaceship -> Houston : We have a problem" + System.lineSeparator() +
+                "\"/]{}à£è/&(/%\" -> \"What?\" : ////>>>" + System.lineSeparator() +
                 "@enduml", result);
     }
 

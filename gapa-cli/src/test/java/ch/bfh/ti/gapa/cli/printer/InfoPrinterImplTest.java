@@ -71,19 +71,18 @@ class InfoPrinterImplTest {
         pw.flush();
 
         //verify
-        Assertions.assertEquals("appDesc\n" +
-                "\n" +
-                "usage: command [-o]\n" +
-                " -o,--option   optionDesc\n" +
-                "\n" +
-                "or\n" +
-                "\n" +
-                "usage: command [-o]\n" +
-                " -o,--option   optionDesc\n" +
-                "\n" +
-                "Possible exit codes:\n" +
-                "0 - Normal termination.\n" +
-                "1 - desc\n", out.toString("utf8"));
+        Assertions.assertEquals("appDesc" + System.lineSeparator() + System.lineSeparator() +
+                "usage: command [-o]" + System.lineSeparator() +
+                " -o,--option   optionDesc" + System.lineSeparator() +
+                System.lineSeparator() +
+                "or" + System.lineSeparator() +
+                        System.lineSeparator() +
+                "usage: command [-o]" + System.lineSeparator() +
+                " -o,--option   optionDesc" + System.lineSeparator() +
+                        System.lineSeparator() +
+                "Possible exit codes:" + System.lineSeparator() +
+                "0 - Normal termination." + System.lineSeparator() +
+                "1 - desc" + System.lineSeparator(), out.toString("utf8"));
     }
 
     @Test
@@ -91,7 +90,7 @@ class InfoPrinterImplTest {
         infoPrinter.printVersion();
         pw.flush();
 
-        Assertions.assertEquals("appName - <version>\n", out.toString("utf8"));
+        Assertions.assertEquals("appName - <version>" + System.lineSeparator(), out.toString("utf8"));
     }
 
     @Test
@@ -109,6 +108,6 @@ class InfoPrinterImplTest {
         }, new Throwable("message")));
         pw.flush();
 
-        Assertions.assertEquals("desc. Cause: message\n", out.toString("utf8"));
+        Assertions.assertEquals("desc. Cause: message" + System.lineSeparator(), out.toString("utf8"));
     }
 }

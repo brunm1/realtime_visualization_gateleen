@@ -45,8 +45,8 @@ class RecordParserTest {
 
     @Test
     void batchParse() {
-        String data = "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service " + "\n" +
-                "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service " + "\n" +
+        String data = "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service " + System.lineSeparator() +
+                "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service " + System.lineSeparator() +
                 "2017-10-20 09:11:29,577  dev gateleen INFO request - %WFk9 PUT /gateleen/server/event/v1/foo/bar s=service ";
 
         RecordParser recordParser = new RecordParser(pattern,  Pattern.compile("(?<target>.*)"), timeFormat);

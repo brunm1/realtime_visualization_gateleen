@@ -27,7 +27,7 @@ public class GapaWebSocketClient extends WebSocketClient implements Client {
 
     @Override
     public void onMessage(String s) {
-        LOGGER.log(Level.FINE, "Received message:\n" + s);
+        LOGGER.log(Level.FINE, "Received message:" + System.lineSeparator() + s);
         stringReceiver.receiveString(s);
     }
 

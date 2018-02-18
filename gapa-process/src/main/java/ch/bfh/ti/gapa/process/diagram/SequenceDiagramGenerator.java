@@ -34,7 +34,7 @@ public class SequenceDiagramGenerator {
 
         sb
             .append("@startuml")
-            .append("\n");
+            .append(System.lineSeparator());
 
         //iterates over all messages and generates a line that depicts it
         for(SequenceDiagramMessage message : messages) {
@@ -44,7 +44,7 @@ public class SequenceDiagramGenerator {
                 .append(escapeActorNameIfNeeded(message.getTo()))
                 .append(" : ")
                 .append(message.getLabel())
-                .append("\n");
+                .append(System.lineSeparator());
         }
 
         sb

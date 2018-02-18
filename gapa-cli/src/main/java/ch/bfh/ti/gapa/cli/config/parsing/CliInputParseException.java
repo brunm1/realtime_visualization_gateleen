@@ -23,6 +23,6 @@ public class CliInputParseException extends Throwable{
      */
     @Override
     public String getMessage() {
-        return "Parsing failed on field " + configField + ".\n" + reason.getMessage();
+        return "Parsing failed on field " + configField + "." + System.lineSeparator() + reason.getMessage();
     }
 }

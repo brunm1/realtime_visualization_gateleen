@@ -95,7 +95,7 @@ abstract class ApplicationTest {
         );
 
         countDownLatch = new CountDownLatch(1);
-        cli.setPrinter(s->virtualCliOutput=s+"\n");
+        cli.setPrinter(s->virtualCliOutput=s+System.lineSeparator());
         cli.setNonBlockingInputStream(new NonBlockingInputStream() {
             @Override
             public void start(InputStream in, NonBlockingInputStreamHandler nonBlockingInputStreamHandler) {
@@ -149,7 +149,7 @@ abstract class ApplicationTest {
             process.getOutputStream().write(10);
             process.getOutputStream().close();
         } else {
-            nonBlockingInputStreamHandler.onReadLine("\n");
+            nonBlockingInputStreamHandler.onReadLine(System.lineSeparator());
         }
     }
 
@@ -226,6 +226,10 @@ abstract class ApplicationTest {
             //TODO set up log output redirection so it can be used here
             processOutput.setStdErr("");
         }
+
+        //newline characters are system dependant. Replace with \n for comparisons in unit tests.
+        String stdOut = processOutput.getStdOut();
+        processOutput.setStdOut(stdOut.replace(System.lineSeparator(), "\n"));
 
         return processOutput;
     }
